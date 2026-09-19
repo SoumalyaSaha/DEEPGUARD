@@ -2,6 +2,8 @@
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue) ![OAS](https://img.shields.io/badge/OAS-3.1-green) ![Status](https://img.shields.io/badge/status-active-brightgreen) ![Models](https://img.shields.io/badge/models-7%20active-orange)
 
+![VERIFY.AI Landing Page](landing-page.png)
+
 > **Multi-modal deepfake detection system** that routes images to 7 specialist AI models via a FastAPI gateway and returns ensemble verdicts with full audit trails.
 
 ---
