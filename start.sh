@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 # ── Local dev launcher (no Docker) ─────────────────────────────────────────────
 # Starts gateway + all model services in background processes.
 # Logs go to logs/<service>.log
