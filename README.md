@@ -8,6 +8,10 @@
 
 ![Neural Depiction](neural-depiction.png)
 
+### 7-Model Consensus Ensemble Voting
+
+![Voting Matrix](voting-matrix.png)
+
 > **Multi-modal deepfake detection system** that routes images to 7 specialist AI models via a FastAPI gateway and returns ensemble verdicts with full audit trails.
 
 ---
