@@ -12,6 +12,10 @@
 
 ![Voting Matrix](voting-matrix.png)
 
+### Thermal Receipt Output
+
+![Thermal Receipt](thermal-receipt.png)
+
 > **Multi-modal deepfake detection system** that routes images to 7 specialist AI models via a FastAPI gateway and returns ensemble verdicts with full audit trails.
 
 ---
