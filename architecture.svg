@@ -1,0 +1,147 @@
+<svg viewBox="0 0 800 920" xmlns="http://www.w3.org/2000/svg" font-family="monospace, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#00f5c4"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ff3366"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#00f5c4"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="920" fill="#060810" rx="16"/>
+
+  <!-- Title -->
+  <text x="400" y="45" text-anchor="middle" fill="#00f5c4" font-size="20" font-weight="bold">🛡️ DeepGuard — Architecture</text>
+  <text x="400" y="68" text-anchor="middle" fill="#5a6480" font-size="13">Parallel Soft-Vote — NPR :5001 + UFD :5004</text>
+
+  <!-- INPUT -->
+  <rect x="280" y="90" width="240" height="48" rx="10" fill="#0d1117" stroke="#4d7cff" stroke-width="2"/>
+  <text x="400" y="109" text-anchor="middle" fill="#4d7cff" font-size="12" font-weight="bold">📁 INPUT FILE</text>
+  <text x="400" y="128" text-anchor="middle" fill="#5a6480" font-size="11">Image / Audio / Video</text>
+
+  <!-- Arrow down -->
+  <line x1="400" y1="138" x2="400" y2="165" stroke="#00f5c4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- GATEWAY -->
+  <rect x="260" y="165" width="280" height="48" rx="10" fill="#0d1117" stroke="#00f5c4" stroke-width="2"/>
+  <text x="400" y="184" text-anchor="middle" fill="#00f5c4" font-size="12" font-weight="bold">⚡ FastAPI Gateway :8000</text>
+  <text x="400" y="203" text-anchor="middle" fill="#5a6480" font-size="11">Routes · Aggregates · Returns Verdict</text>
+
+  <!-- Arrow to image branch -->
+  <line x1="340" y1="213" x2="200" y2="250" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3"/>
+  <!-- Arrow to audio branch -->
+  <line x1="400" y1="213" x2="400" y2="260" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3"/>
+  <!-- Arrow to video branch -->
+  <line x1="460" y1="213" x2="600" y2="260" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3"/>
+
+  <!-- Branch labels -->
+  <text x="200" y="245" text-anchor="middle" fill="#5a6480" font-size="10">image — parallel</text>
+  <text x="400" y="255" text-anchor="middle" fill="#5a6480" font-size="10">audio</text>
+  <text x="600" y="255" text-anchor="middle" fill="#5a6480" font-size="10">video</text>
+
+  <!-- ── IMAGE PIPELINE — NPR + UFD parallel ── -->
+  <!-- NPR :5001 -->
+  <rect x="40" y="268" width="150" height="56" rx="10" fill="#0d1117" stroke="#ff9500" stroke-width="2"/>
+  <text x="115" y="287" text-anchor="middle" fill="#ff9500" font-size="11" font-weight="bold">NPR :5001</text>
+  <text x="115" y="303" text-anchor="middle" fill="#e8eaf2" font-size="10">ResNet-50 CNNDet</text>
+  <text x="115" y="317" text-anchor="middle" fill="#5a6480" font-size="10">Noise Pattern</text>
+
+  <!-- UFD :5004 -->
+  <rect x="210" y="268" width="150" height="56" rx="10" fill="#0d1117" stroke="#00f5c4" stroke-width="2"/>
+  <text x="285" y="287" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">UFD :5004</text>
+  <text x="285" y="303" text-anchor="middle" fill="#e8eaf2" font-size="10">CLIP ViT-L/14</text>
+  <text x="285" y="317" text-anchor="middle" fill="#5a6480" font-size="10">Universal Fake</text>
+
+  <!-- arrows down -->
+  <line x1="115" y1="324" x2="115" y2="365" stroke="#ff9500" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="285" y1="324" x2="285" y2="365" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- merge lines -->
+  <line x1="115" y1="365" x2="200" y2="365" stroke="#5a6480" stroke-width="1.5"/>
+  <line x1="285" y1="365" x2="200" y2="365" stroke="#5a6480" stroke-width="1.5"/>
+
+  <!-- soft-vote diamond -->
+  <polygon points="200,365 270,395 200,425 130,395" fill="#0d1117" stroke="#00f5c4" stroke-width="1.5"/>
+  <text x="200" y="391" text-anchor="middle" fill="#e8eaf2" font-size="9">soft-</text>
+  <text x="200" y="403" text-anchor="middle" fill="#e8eaf2" font-size="9">vote</text>
+
+  <text x="200" y="442" text-anchor="middle" fill="#5a6480" font-size="9">avg fake_prob · meta_learner</text>
+
+  <line x1="200" y1="425" x2="200" y2="460" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- verdict diamond -->
+  <polygon points="200,460 270,490 200,520 130,490" fill="#0d1117" stroke="#4d7cff" stroke-width="1.5"/>
+  <text x="200" y="486" text-anchor="middle" fill="#e8eaf2" font-size="9">≥ 0.5 ?</text>
+  <text x="200" y="498" text-anchor="middle" fill="#e8eaf2" font-size="9">fake</text>
+
+  <!-- ≥0.5 → FAKE -->
+  <line x1="130" y1="490" x2="60" y2="490" stroke="#ff3366" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+  <text x="95" y="483" text-anchor="middle" fill="#5a6480" font-size="9">≥0.5</text>
+  <rect x="10" y="473" width="50" height="34" rx="8" fill="#0d1117" stroke="#ff3366" stroke-width="1.5"/>
+  <text x="35" y="488" text-anchor="middle" fill="#ff3366" font-size="10" font-weight="bold">❌</text>
+  <text x="35" y="501" text-anchor="middle" fill="#ff3366" font-size="9">FAKE</text>
+
+  <!-- <0.5 → REAL -->
+  <line x1="270" y1="490" x2="340" y2="490" stroke="#00f5c4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="305" y="483" text-anchor="middle" fill="#5a6480" font-size="9">&lt;0.5</text>
+  <rect x="340" y="473" width="50" height="34" rx="8" fill="#0d1117" stroke="#00f5c4" stroke-width="1.5"/>
+  <text x="365" y="488" text-anchor="middle" fill="#00f5c4" font-size="10" font-weight="bold">✅</text>
+  <text x="365" y="501" text-anchor="middle" fill="#00f5c4" font-size="9">REAL</text>
+
+  <text x="200" y="538" text-anchor="middle" fill="#5a6480" font-size="9">asyncio.gather(NPR, UFD)</text>
+  <text x="200" y="551" text-anchor="middle" fill="#5a6480" font-size="9">valid = [r if verdict != "error"]</text>
+
+  <!-- ── AUDIO (center) ── -->
+  <rect x="330" y="268" width="140" height="56" rx="10" fill="#0d1117" stroke="#4d7cff" stroke-width="2"/>
+  <text x="400" y="287" text-anchor="middle" fill="#4d7cff" font-size="11" font-weight="bold">RawNet2 :5002</text>
+  <text x="400" y="303" text-anchor="middle" fill="#e8eaf2" font-size="10">Audio Detector</text>
+  <text x="400" y="317" text-anchor="middle" fill="#5a6480" font-size="10">ASVspoof 2021</text>
+
+  <!-- ── VIDEO (right) ── -->
+  <rect x="510" y="268" width="160" height="56" rx="10" fill="#0d1117" stroke="#4d7cff" stroke-width="2"/>
+  <text x="590" y="287" text-anchor="middle" fill="#4d7cff" font-size="11" font-weight="bold">CrossViT :7001</text>
+  <text x="590" y="303" text-anchor="middle" fill="#e8eaf2" font-size="10">Video Detector</text>
+  <text x="590" y="317" text-anchor="middle" fill="#5a6480" font-size="10">FaceForensics++</text>
+
+  <!-- ── TECH STACK ── -->
+  <text x="400" y="810" text-anchor="middle" fill="#00f5c4" font-size="14" font-weight="bold">🔧 Tech Stack</text>
+
+  <rect x="30" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="85" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">Backend</text>
+  <text x="85" y="864" text-anchor="middle" fill="#e8eaf2" font-size="10">FastAPI</text>
+  <text x="85" y="878" text-anchor="middle" fill="#e8eaf2" font-size="10">Uvicorn</text>
+  <text x="85" y="892" text-anchor="middle" fill="#5a6480" font-size="10">Python 3.11</text>
+
+  <rect x="155" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="210" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">ML Models</text>
+  <text x="210" y="864" text-anchor="middle" fill="#e8eaf2" font-size="10">PyTorch</text>
+  <text x="210" y="878" text-anchor="middle" fill="#e8eaf2" font-size="10">CLIP ViT-L/14</text>
+  <text x="210" y="892" text-anchor="middle" fill="#5a6480" font-size="10">timm / HuggingFace</text>
+
+  <rect x="280" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="335" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">Frontend</text>
+  <text x="335" y="864" text-anchor="middle" fill="#e8eaf2" font-size="10">HTML / CSS / JS</text>
+  <text x="335" y="878" text-anchor="middle" fill="#e8eaf2" font-size="10">Single Page App</text>
+  <text x="335" y="892" text-anchor="middle" fill="#5a6480" font-size="10">No build needed</text>
+
+  <rect x="405" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="460" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">Detection</text>
+  <text x="460" y="864" text-anchor="middle" fill="#e8eaf2" font-size="10">NPR + UFD</text>
+  <text x="460" y="878" text-anchor="middle" fill="#e8eaf2" font-size="10">RawNet2 + CrossViT</text>
+  <text x="460" y="892" text-anchor="middle" fill="#5a6480" font-size="10">soft-vote average</text>
+
+  <rect x="530" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="585" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">Deploy</text>
+  <text x="585" y="864" text-anchor="middle" fill="#e8eaf2" font-size="10">Docker Compose</text>
+  <text x="585" y="878" text-anchor="middle" fill="#e8eaf2" font-size="10">Vercel (frontend)</text>
+  <text x="585" y="892" text-anchor="middle" fill="#5a6480" font-size="10">Railway (backend)</text>
+
+  <rect x="655" y="825" width="110" height="70" rx="8" fill="#0d1117" stroke="#1a2235" stroke-width="1.5"/>
+  <text x="710" y="848" text-anchor="middle" fill="#00f5c4" font-size="11" font-weight="bold">Cloud API</text>
+  <text x="710" y="864" text-anchor="middle" fill="#5a6480" font-size="10">AI-or-Not</text>
+  <text x="710" y="878" text-anchor="middle" fill="#5a6480" font-size="10">(disconnected)</text>
+  <text x="710" y="892" text-anchor="middle" fill="#5a6480" font-size="10">kept, not used</text>
+</svg>

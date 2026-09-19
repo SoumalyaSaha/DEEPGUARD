@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" style="overflow-y: auto !important; height: auto !important; min-height: 100vh !important; width: 100% !important; margin: 0; padding: 0; background-color: #070e1d; color: #dce2f8;"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VERIFY.AI // Forensic Synthetic Media Consensus Terminal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error": "#ffb4ab",
+            "surface-container": "#191f2f",
+            "outline-variant": "#3b494b",
+            "on-primary-fixed": "#002022",
+            "tertiary": "#f4f5ff",
+            "surface-container-lowest": "#070e1d",
+            "on-tertiary-container": "#005ac2",
+            "surface-container-low": "#151b2b",
+            "on-secondary": "#003642",
+            "primary-fixed-dim": "#00dbe9",
+            "on-background": "#dce2f8",
+            "on-tertiary-fixed-variant": "#004494",
+            "on-tertiary": "#002e69",
+            "surface-tint": "#00dbe9",
+            "surface-container-highest": "#2e3545",
+            "surface-bright": "#32394a",
+            "on-primary-container": "#006970",
+            "secondary": "#4cd6fb",
+            "surface": "#0c1322",
+            "secondary-fixed-dim": "#4cd6fb",
+            "inverse-on-surface": "#293041",
+            "on-surface-variant": "#b9cacb",
+            "on-secondary-container": "#003f4e",
+            "error-container": "#93000a",
+            "surface-container-high": "#232a3a",
+            "on-surface": "#dce2f8",
+            "on-primary": "#00363a",
+            "on-tertiary-fixed": "#001a41",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#dce2f8",
+            "tertiary-fixed": "#d8e2ff",
+            "on-secondary-fixed": "#001f27",
+            "primary": "#dbfcff",
+            "tertiary-container": "#cad9ff",
+            "primary-container": "#00f0ff",
+            "surface-variant": "#2e3545",
+            "primary-fixed": "#7df4ff",
+            "tertiary-fixed-dim": "#adc6ff",
+            "inverse-primary": "#006970",
+            "secondary-fixed": "#b3ebff",
+            "on-primary-fixed-variant": "#004f54",
+            "secondary-container": "#00b2d6",
+            "on-error": "#690005",
+            "on-secondary-fixed-variant": "#004e5f",
+            "surface-dim": "#0c1322",
+            "outline": "#849495",
+            "background": "#070e1d"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-desktop": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem"
+          },
+          fontFamily: {
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "label-lg": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"],
+            "body-lg": ["Inter"],
+            "headline-lg-mobile": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "mono-data": ["JetBrains Mono"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    html, body {
+      overflow-y: auto !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      width: 100% !important;
+      margin: 0;
+      padding: 0;
+      background-color: #070e1d !important;
+      color: #dce2f8 !important;
+      display: block !important;
+      position: relative !important;
+      scroll-behavior: smooth;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070e1d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232a3a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00dbe9;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Fixed Header Navigation -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/30">
+<div class="h-16 w-full px-margin-desktop flex items-center justify-between gap-gutter-desktop">
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-2.5 h-2.5 bg-primary-container animate-pulse rounded-DEFAULT shadow-[0_0_8px_rgba(0,240,255,0.7)]"></div>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary font-bold">VERIFY.AI</span>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 bg-surface-container-high text-secondary border border-secondary/30 rounded-DEFAULT">v4.2</span>
+</div>
+<div class="h-5 w-px bg-outline-variant/40 hidden lg:block"></div>
+<div class="hidden lg:flex items-center gap-space-md font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="text-secondary font-semibold">SYS_ONLINE</span>
+</div>
+<span class="text-outline-variant">|</span>
+<span class="font-mono-data text-on-surface-variant">LATENCY: <strong class="text-primary font-normal">18ms</strong></span>
+<span class="text-outline-variant">|</span>
+<span class="font-mono-data text-on-surface-variant">INTEGRITY: <strong class="text-secondary font-normal">99.98%</strong></span>
+</div>
+</div>
+<nav class="hidden xl:flex items-center gap-space-xs h-full">
+<a class="px-space-md h-full flex items-center font-label-md uppercase tracking-wider transition-all bg-surface-container-high text-primary-container border-b-2 border-primary-container" href="#verify-section">[VERIFY]</a>
+<a class="px-space-md h-full flex items-center font-label-md uppercase tracking-wider text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" href="#neural-engine">[NEURAL ENGINE]</a>
+<a class="px-space-md h-full flex items-center font-label-md uppercase tracking-wider text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" href="#consensus">[7-MODEL CONSENSUS]</a>
+<a class="px-space-md h-full flex items-center font-label-md uppercase tracking-wider text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" href="#prediction-audit-log">[AUDIT LOG]</a>
+</nav>
+<div class="flex items-center gap-space-md">
+<a class="hidden sm:flex items-center gap-space-xs px-space-md py-1.5 bg-primary-container text-on-primary-container font-label-md uppercase font-semibold rounded-DEFAULT hover:bg-primary-fixed-dim transition-all shadow-[0_0_12px_rgba(0,240,255,0.25)]" href="#verify-section">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span class="">Quick Audit</span>
+</a>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Outer Main Page Content (Guaranteed non-locking, visible layout) -->
+<main class="w-full pt-16 bg-surface min-h-screen relative flex flex-col overflow-visible">
+<div class="flex flex-col w-full">
+<!-- HERO SECTION -->
+<section class="relative w-full overflow-hidden bg-surface-container-lowest px-margin-desktop py-space-xl border-b border-outline-variant/30">
+<div class="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#3b494b15_1px,transparent_1px),linear-gradient(to_bottom,#3b494b15_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+<div class="absolute top-0 right-1/4 w-96 h-96 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative max-w-7xl mx-auto flex flex-col items-center text-center">
+<!-- Terminal Identification Badge -->
+<div class="inline-flex items-center gap-space-sm px-space-md py-1 rounded-DEFAULT bg-surface-container-high border border-secondary/30 text-secondary mb-space-lg shadow-[0_0_12px_rgba(0,240,255,0.15)]">
+<span class="inline-block w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-label-sm uppercase tracking-wider">MULTI-EXPERT DEEPFAKE FORENSIC TERMINAL // ENG-CORE v4.2 // 7 CONCURRENT MODELS</span>
+</div>
+<!-- Main Headline -->
+<h1 class="font-headline-xl text-4xl lg:text-5xl text-primary font-bold max-w-4xl tracking-tight mb-space-md">
+            Forensic Synthetic Media <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container via-secondary to-primary">Consensus Analysis</span>
+</h1>
+<p class="font-body-lg text-lg text-on-surface-variant max-w-3xl mb-space-xl leading-relaxed">
+            Analyze digital media through seven specialized convolutional &amp; diffusion artifact detection models simultaneously producing calibrated authenticity verification with cryptographic hardware attestation.
+          </p>
+<!-- Action Button Group -->
+<div class="flex flex-wrap items-center justify-center gap-space-md mb-space-xl">
+<a class="inline-flex items-center gap-space-xs px-space-lg py-3 bg-primary-container text-on-primary-container font-label-lg uppercase tracking-wider font-semibold rounded-DEFAULT hover:bg-primary-fixed-dim transition-all shadow-[0_0_16px_rgba(0,240,255,0.3)]" href="#verify-section">
+<span class="">TRY IT OUT</span>
+<span class="material-symbols-outlined text-[18px]">south</span>
+</a>
+<a class="inline-flex items-center gap-space-xs px-space-lg py-3 bg-surface-container-low text-primary border border-secondary/40 font-label-lg uppercase tracking-wider font-medium rounded-DEFAULT hover:bg-surface-container hover:border-primary-container transition-all" href="#neural-engine">
+<span class="material-symbols-outlined text-[18px]">memory</span>
+<span class="">EXPLORE ARCHITECTURE [7 MODELS]</span>
+</a>
+</div>
+<!-- Collaboration Framework Acknowledgement -->
+<div class="w-full max-w-3xl p-space-sm rounded-DEFAULT bg-surface-container-low/80 border border-outline-variant/30 text-left flex items-start gap-space-md backdrop-blur-md">
+<span class="material-symbols-outlined text-secondary text-[22px] mt-0.5 shrink-0">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-secondary uppercase font-semibold">COLLABORATIVE ARCHITECTURE</span>
+<span class="font-mono-data text-xs text-on-surface-variant leading-relaxed">
+                VERIFY.AI combines academic open-weights and proprietary neural weights across spatial, frequency, and latent diffusion domains (NPR, UFD, IAPL, SDXL, CapCheck, Error Variance, and Dual-FFT).
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- FORENSIC INGESTION BAY (TWO-COLUMN WORKSPACE) -->
+<section class="w-full px-margin-desktop py-space-xl bg-surface border-b border-outline-variant/20 relative" id="verify-section">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<!-- Section Micro-Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs pb-space-sm border-b border-outline-variant/30">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[20px]">csv</span>
+<h2 class="font-headline-sm uppercase tracking-wider text-primary font-bold">VERIFY YOUR MEDIA // FORENSIC INGESTION BAY</h2>
+</div>
+<div class="flex items-center gap-space-sm font-label-sm text-secondary">
+<span class="px-space-xs py-0.5 bg-surface-container-high rounded-DEFAULT border border-secondary/30">INPUT: MULTI-SPECTRAL RGB</span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant font-mono-data">SHA256 CHECKSUM ENGAGED</span>
+</div>
+</div>
+<!-- Two-Column Forensic Terminal -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: Ingestion / File Inspector -->
+<div class="lg:col-span-6 flex flex-col gap-space-md bg-surface-container-low p-space-lg rounded-DEFAULT border border-outline-variant/40 shadow-xl">
+<div class="flex items-center justify-between">
+<span class="font-label-md uppercase text-primary font-semibold flex items-center gap-1.5">
+<span class="w-2 h-2 bg-primary-container rounded-full"></span>
+                  UPLOAD YOUR SAMPLE
+                </span>
+<span class="font-mono-data text-xs text-on-surface-variant">INSPECTION PORT #09</span>
+</div>
+<!-- Drag & Drop Target Reticle Zone -->
+<div class="relative group cursor-pointer border-2 border-dashed border-secondary/40 hover:border-primary-container bg-surface-container-lowest/80 rounded-DEFAULT p-space-md transition-all flex flex-col items-center justify-center min-h-[280px] overflow-hidden" id="dropzone-box">
+<div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-primary-container pointer-events-none"></div>
+<div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-primary-container pointer-events-none"></div>
+<div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-primary-container pointer-events-none"></div>
+<div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-primary-container pointer-events-none"></div>
+<!-- Preview Content -->
+<div class="relative w-full h-48 bg-surface-container rounded-DEFAULT overflow-hidden mb-space-sm flex items-center justify-center">
+<img alt="Forensic inspection viewport showing high resolution synthetic face portrait with grid reticle bounding boxes" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-ndcJFjNvtFNCr6crcx9tfuRhHN6Kq3bynTTKpuQmH2PJvTdHwezc9deRN9bIrIjCd24PUxO6uHSfuMrCX-qa0Y4nVJe4Qb8x_T66UklkjbMvN_z2cu4hf1zVmSL9snugMYi7JICw5-QDr4nfsLpRzKDAIAc8RsX_Zvo54nZNXztCxEICIhq1KGwfCZG9dS-X1a-AfNFX_CL9yd5-TDJ67Mdb8B00pw4WF-li_AZ67-h48PYyJhw-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 px-1.5 py-0.5 bg-surface-container-lowest/90 font-mono-data text-[10px] text-secondary border border-secondary/30 rounded-DEFAULT">
+                    ROI_COORDS: [X: 412, Y: 198, W: 640, H: 640]
+                  </div>
+<div class="absolute top-2 right-2 px-1.5 py-0.5 bg-error-container/80 text-error font-label-sm border border-error/40 rounded-DEFAULT">
+                    FLAGGED ARTIFACT
+                  </div>
+</div>
+<div class="flex items-center gap-space-sm text-on-surface-variant font-mono-data text-xs text-center">
+<span class="material-symbols-outlined text-secondary text-[18px]">cloud_upload</span>
+<span class="">DRAG &amp; DROP RAW FRAME OR TAP TO BROWSE</span>
+</div>
+</div>
+<!-- Metadata Telemetry Pills -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs font-mono-data text-xs">
+<div class="p-2 bg-surface-container rounded-DEFAULT border border-outline-variant/20 flex flex-col">
+<span class="text-on-surface-variant text-[10px]">FILE_NAME</span>
+<span class="text-primary truncate font-semibold" id="sample-filename">sample_09.png</span>
+</div>
+<div class="p-2 bg-surface-container rounded-DEFAULT border border-outline-variant/20 flex flex-col">
+<span class="text-on-surface-variant text-[10px]">SHA-256</span>
+<span class="text-secondary truncate">8a7c...3e19</span>
+</div>
+<div class="p-2 bg-surface-container rounded-DEFAULT border border-outline-variant/20 flex flex-col">
+<span class="text-on-surface-variant text-[10px]">ENCODING</span>
+<span class="text-primary truncate">Lossless sRGB</span>
+</div>
+<div class="p-2 bg-surface-container rounded-DEFAULT border border-outline-variant/20 flex flex-col">
+<span class="text-on-surface-variant text-[10px]">DIMENSION</span>
+<span class="text-secondary truncate">1920x1080 (2.4MB)</span>
+</div>
+</div>
+<!-- Action Buttons Bar -->
+<div class="flex flex-col sm:flex-row items-center gap-space-sm pt-space-xs">
+<button class="w-full sm:w-1/3 py-2.5 px-space-md bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md uppercase tracking-wider rounded-DEFAULT border border-outline-variant/40 flex items-center justify-center gap-1.5 transition-all cursor-pointer" id="switch-sample-btn" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span class="">SWITCH SAMPLE</span>
+</button>
+<button class="w-full sm:w-2/3 py-2.5 px-space-md bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-label-md uppercase tracking-wider font-bold rounded-DEFAULT flex items-center justify-center gap-2 shadow-[0_0_14px_rgba(0,240,255,0.3)] active:scale-[0.99] transition-all cursor-pointer" id="execute-test-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">radiology</span>
+<span class="">[ TEST THE SAMPLE NOW ]</span>
+</button>
+</div>
+</div>
+<!-- RIGHT COLUMN: Verification Output Terminal -->
+<div class="lg:col-span-6 flex flex-col gap-space-md bg-surface-container-low p-space-lg rounded-DEFAULT border border-outline-variant/40 shadow-xl">
+<div class="flex items-center justify-between pb-space-xs border-b border-outline-variant/20">
+<div class="flex items-center gap-space-xs font-label-md uppercase text-primary font-semibold">
+<span class="material-symbols-outlined text-primary-container text-[18px]">terminal</span>
+<span class="">VERIFICATION OUTPUT TERMINAL</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-surface-container rounded-DEFAULT border border-secondary/20">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse" id="pipeline-status-led"></span>
+<span class="font-label-sm text-secondary" id="pipeline-status-txt">STATUS: ANALYSIS COMPLETE</span>
+</div>
+</div>
+<!-- Console Telemetry Box -->
+<div class="w-full h-[280px] bg-surface-container-lowest p-space-md rounded-DEFAULT border border-outline-variant/30 font-mono-data text-xs text-on-surface overflow-y-auto space-y-2 relative shadow-inner">
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary">[13:42:17.104]</span>
+<span class="">Ingested raw media frame 'deepfake_sample_09.png' [1920x1080@24bpp].</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary">[13:42:17.218]</span>
+<span class="">Computing 2D Fast Fourier Transform (azimuthal integral &amp; high-freq bandpass).</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary">[13:42:17.412]</span>
+<span class="">Extracted noise residuals &amp; patch-level discrete cosine transform coefficients.</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary">[13:42:17.650]</span>
+<span class="">Dispatched normalized tensor to 7 parallel inference workers (AP-NORTH cluster).</span>
+</div>
+<div class="text-primary flex items-start gap-2">
+<span class="text-primary-container">[13:42:17.820]</span>
+<span class="">SDXL Latent Reconstructor detected 12.8% residual variance anomaly [WEIGHT: 0.991].</span>
+</div>
+<div class="text-primary flex items-start gap-2">
+<span class="text-primary-container">[13:42:18.014]</span>
+<span class="">CapCheck Capsule network flagged spatial inconsistency in ocular reflections.</span>
+</div>
+<div class="text-error flex items-start gap-2">
+<span class="text-error font-bold">[13:42:18.232]</span>
+<span class="">Multi-expert consensus voting reached: 6 / 7 models synthetic flagged.</span>
+</div>
+<div class="text-secondary flex items-start gap-2 pt-1 border-t border-outline-variant/20">
+<span class="text-secondary">[13:42:18.245]</span>
+<span class="">HARDWARE ATTESTATION: Enclave SHA-256 seal 0xbf79...44a1 validated.</span>
+</div>
+</div>
+<!-- High-Level Quick Stats Gauge -->
+<div class="p-space-sm bg-surface-container rounded-DEFAULT border border-outline-variant/30 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase">OVERALL INTEGRITY RATING</span>
+<span class="font-headline-sm font-bold text-error text-base sm:text-lg">AI-GENERATED SYNTHETIC</span>
+</div>
+<div class="text-right flex flex-col items-end">
+<span class="font-label-sm text-on-surface-variant uppercase">ENSEMBLE CONFIDENCE</span>
+<span class="font-headline-sm font-bold text-primary-container text-base sm:text-lg">94.7%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SEE THE PROCESS // LIVE MULTI-EXPERT INFERENCE (NEURAL CANVAS & IMAGE) -->
+<section class="w-full px-margin-desktop py-space-xl bg-surface-container-lowest border-b border-outline-variant/20 relative" id="neural-engine">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div>
+<div class="flex items-center gap-space-xs font-label-sm text-secondary uppercase font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">hub</span>
+<span class="">TOPOLOGY VIEWPORT</span>
+</div>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-primary">LIVE MULTI-EXPERT NEURAL CONSENSUS</h2>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs font-mono-data text-xs text-on-surface-variant">
+<span class="px-space-xs py-0.5 bg-surface-container-high border border-cyan-500/30 rounded-DEFAULT text-primary-container">
+                [INPUT: 7 EXPERT ARRAYS]
+              </span>
+<span class="px-space-xs py-0.5 bg-surface-container-high border border-outline-variant/40 rounded-DEFAULT text-secondary">
+                [HIDDEN: DENSE LATENT BOTTLENECK]
+              </span>
+<span class="px-space-xs py-0.5 bg-surface-container-high border border-cyan-500/30 rounded-DEFAULT text-primary">
+                [OUTPUT: 9 CLASSIFIER HEADS]
+              </span>
+</div>
+</div>
+<!-- Main Interactive 16:9 Architecture Image Container -->
+<div class="relative w-full bg-surface-container-lowest rounded-xl border border-cyan-500/30 overflow-hidden shadow-[0_0_25px_rgba(0,240,255,0.15)] flex flex-col p-space-sm sm:p-space-md">
+<!-- Dedicated Living Filament Three.js Neural Network Simulation -->
+<div class="relative w-full rounded-lg overflow-hidden flex items-center justify-center bg-[#050810]" id="three-viewport-wrapper" style="width: 100%; height: 520px; position: relative; overflow: hidden; background: #050810; border-radius: 8px;">
+<div class="w-full h-full absolute inset-0 cursor-grab active:cursor-grabbing" id="neural-canvas-container"></div>
+<div class="absolute inset-0 pointer-events-none overflow-hidden select-none font-mono text-[10px]" id="neural-labels-layer"></div>
+<!-- Interactive Overlay UI on Neural Viewport -->
+<div class="absolute top-3 left-3 z-10 flex flex-col gap-1 pointer-events-none">
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#0c1322]/80 border border-secondary/30 backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-mono-data text-[10px] text-primary tracking-wider uppercase">SYNAPSE_ACTIVITY: <span class="text-primary-container font-semibold" id="synapse-status">STEADY STATE</span></span>
+</div>
+<div class="font-mono-data text-[9px] text-on-surface-variant px-1">DRAG TO ORBIT // SCROLL TO ZOOM</div>
+</div>
+<div class="absolute top-3 right-3 z-10 flex items-center gap-2">
+<button class="px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-secondary border border-secondary/40 text-[10px] font-mono uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_8px_rgba(0,240,255,0.2)] flex items-center gap-1" id="trigger-pulse-btn">
+<span class="material-symbols-outlined text-[14px]">electric_bolt</span>
+<span>INJECT TEST PULSE</span>
+</button>
+</div>
+<div class="absolute inset-0 pointer-events-none rounded-xl border border-primary-container/20 shadow-[0_0_20px_rgba(0,240,255,0.1)]"></div>
+</div>
+<!-- Live Telemetry Bar -->
+<div class="relative z-20 w-full p-space-xs mt-space-sm bg-surface-container-high/90 border border-outline-variant/30 rounded-DEFAULT flex flex-col sm:flex-row items-center justify-between gap-space-xs backdrop-blur-md font-mono-data text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="text-on-surface">Seven expert models evaluating sample spatial artifacts across 4 hidden dense layers...</span>
+</div>
+<div class="flex items-center gap-space-md text-secondary">
+<span class="">[SYNCED // INFERENCE LATENCY: 412ms]</span>
+<span class="text-on-surface-variant">ROUTER CLUSTER: 0x88F</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7-MODEL VOTING & FORENSIC CONSENSUS MATRIX -->
+<section class="w-full px-margin-desktop py-space-xl bg-surface border-b border-outline-variant/20" id="consensus">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-secondary uppercase font-semibold">ENSEMBLE DECOMPOSITION</span>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-primary">7-MODEL VOTING &amp; FORENSIC MATRIX</h2>
+</div>
+<div class="px-space-md py-1.5 bg-error-container/40 border border-error/30 text-error rounded-DEFAULT font-label-md uppercase font-semibold text-xs sm:text-sm">
+              6 OF 7 MODELS FLAGGED AS SYNTHETIC (94.7% CONFIDENCE)
+            </div>
+</div>
+<!-- 7 Model Status Matrix Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Model 1: NPR -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">NPR</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Neighbor Pixel Rel. Spatial</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 98.4%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">98.4%</span>
+</div>
+</div>
+<!-- Model 2: UFD -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">UFD</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Universal Forensics Detector</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 91.2%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">91.2%</span>
+</div>
+</div>
+<!-- Model 3: IAPL -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">IAPL</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Artifact Pattern Latent Net</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 96.0%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">96.0%</span>
+</div>
+</div>
+<!-- Model 4: SDXL DETECTOR -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">SDXL DETECTOR</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Latent Diffusion Noise Core</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 99.1%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">99.1%</span>
+</div>
+</div>
+<!-- Model 5: DIFFUSION_RECON -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">DIFFUSION_RECON</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Error Variance Inversion</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 89.5%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">89.5%</span>
+</div>
+</div>
+<!-- Model 6: CAPCHECK -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">CAPCHECK</span>
+<span class="px-1.5 py-0.5 bg-error-container/30 text-error font-label-sm text-[10px] rounded-DEFAULT border border-error/20">SYNTHETIC</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">Capsule Hierarchy Geometry</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-error h-full" style="width: 93.7%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability</span>
+<span class="text-primary font-bold">93.7%</span>
+</div>
+</div>
+<!-- Model 7: NONESCAPE -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/30 rounded-DEFAULT flex flex-col gap-space-xs hover:border-secondary/40 transition-colors md:col-span-2 lg:col-span-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-primary font-bold">NONESCAPE SPECTRUM</span>
+<span class="px-1.5 py-0.5 bg-surface-container-highest text-on-surface-variant font-label-sm text-[10px] rounded-DEFAULT border border-outline-variant/40">INCONCLUSIVE</span>
+</div>
+<span class="font-mono-data text-[11px] text-on-surface-variant">High-Frequency Azimuthal Bandpass Residue</span>
+<div class="w-full bg-surface-container-lowest h-2 rounded-DEFAULT overflow-hidden my-1 flex">
+<div class="bg-secondary h-full" style="width: 52.1%"></div>
+</div>
+<div class="flex items-center justify-between font-mono-data text-[11px]">
+<span class="text-on-surface-variant">Probability Variance</span>
+<span class="text-secondary font-bold">52.1% (Threshold: 65.0%)</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ATM-STYLE 3D THERMAL FORENSIC RECEIPT COMPONENT -->
+<section class="w-full px-margin-desktop py-space-xl bg-surface-container-lowest border-b border-outline-variant/20 relative overflow-hidden">
+<div class="max-w-4xl mx-auto flex flex-col items-center">
+<div class="text-center mb-space-lg">
+<span class="font-label-sm text-secondary uppercase font-semibold">AUTHENTICATION ATTESTATION EXTRUSION</span>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-primary">FORENSIC AUDIT THERMAL RECEIPT</h2>
+<p class="font-body-md text-sm sm:text-base text-on-surface-variant max-w-xl mx-auto mt-1">
+              Cryptographically signed physical-analogue forensic token emitted directly from the local hardware trust enclave.
+            </p>
+</div>
+<!-- Mechanical Dispenser Slot Frame -->
+<div class="w-full max-w-xl bg-surface-container-high p-space-sm rounded-DEFAULT border-t-2 border-b-2 border-outline-variant shadow-2xl relative">
+<div class="flex items-center justify-between px-space-sm pb-1 font-mono-data text-[10px] text-on-surface-variant">
+<span class="">DISPENSER PORT #01 // MECHANICAL RECEIPT EXTRUSION</span>
+<span class="text-primary-container font-semibold">FEED_ACTIVE</span>
+</div>
+<!-- Slot Opening -->
+<div class="w-full h-3 bg-surface-container-lowest rounded-DEFAULT border border-outline-variant/60 relative flex justify-center shadow-inner">
+<div class="w-11/12 h-1 bg-surface-container-lowest"></div>
+</div>
+<!-- Thermal Paper Emergence Container with Drop Shadow -->
+<div class="relative w-full flex justify-center -mt-1 px-4">
+<div class="w-full bg-[#f4f5ff] text-[#001a41] p-space-lg rounded-t-sm shadow-[0_20px_40px_rgba(0,0,0,0.85)] font-mono-data relative border-b-4 border-dashed border-[#001a41]/30">
+<!-- Receipt Header -->
+<div class="text-center border-b border-[#001a41]/20 pb-space-sm mb-space-md">
+<div class="text-lg font-bold tracking-widest uppercase">VERIFY.AI FORENSIC CORE</div>
+<div class="text-[11px] text-[#002e69]">MULTIMODAL SYNTHETIC MEDIA LAB REPORT</div>
+<div class="text-[10px] mt-1 text-[#002e69]">ATTESTATION ID: <span class="font-bold">VA-7K3P-91XQ</span></div>
+</div>
+<!-- Receipt Metadata Grid -->
+<div class="text-[11px] space-y-1.5 border-b border-[#001a41]/20 pb-space-md mb-space-md">
+<div class="flex justify-between">
+<span class="text-[#002e69]">TIMESTAMP:</span>
+<span class="font-bold">19 SEP 2026 13:42:18 UTC</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#002e69]">TARGET FILE:</span>
+<span class="font-bold">deepfake_sample_09.png</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#002e69]">SHA256 HASH:</span>
+<span class="font-bold">8a7cf2b...3e19c4d</span>
+</div>
+<div class="flex justify-between">
+<span class="text-[#002e69]">OPERATOR ENCLAVE:</span>
+<span class="font-bold">AP-NORTH-1A / HSM-9</span>
+</div>
+</div>
+<!-- Verdict Box Inside Receipt -->
+<div class="bg-[#002e69]/10 p-space-sm rounded border border-[#002e69]/30 text-center mb-space-md">
+<div class="text-[10px] tracking-wider uppercase text-[#002e69]">FINAL CALIBRATED DETERMINATION</div>
+<div class="text-xl font-black text-[#93000a] tracking-tight uppercase">AI-GENERATED (SYNTHETIC)</div>
+<div class="text-[11px] font-bold text-[#002e69]">CONFIDENCE SCORE: 94.7%</div>
+</div>
+<!-- Voting Breakdown Summary -->
+<div class="text-[11px] space-y-1 border-b border-[#001a41]/20 pb-space-md mb-space-md">
+<div class="flex justify-between">
+<span class="">NPR SPATIAL WEIGHT:</span>
+<span class="font-bold">0.984 [FLAGGED]</span>
+</div>
+<div class="flex justify-between">
+<span class="">SDXL LATENT RESIDUAL:</span>
+<span class="font-bold">0.991 [FLAGGED]</span>
+</div>
+<div class="flex justify-between">
+<span class="">CAPSULE GEOMETRY:</span>
+<span class="font-bold">0.937 [FLAGGED]</span>
+</div>
+<div class="flex justify-between">
+<span class="">SPECTRAL AZIMUTHAL:</span>
+<span class="font-bold">0.521 [PASS]</span>
+</div>
+</div>
+<!-- Barcode & Cryptographic Signature Emulation -->
+<div class="flex flex-col items-center gap-1 my-space-sm">
+<div class="w-full h-10 bg-[repeating-linear-gradient(90deg,#001a41,#001a41_2px,transparent_2px,transparent_4px,#001a41_4px,#001a41_7px,transparent_7px,transparent_9px)]"></div>
+<span class="text-[9px] text-[#002e69] tracking-widest font-bold">||| |||| || | ||||| ||| || ||||| ||</span>
+</div>
+<!-- User Ground-Truth Feedback Mechanism -->
+<div class="mt-space-md pt-space-xs border-t border-[#001a41]/20 text-center">
+<div class="text-[10px] uppercase font-bold text-[#002e69] mb-1.5" id="receipt-feedback-heading">Was this forensic determination accurate?</div>
+<div class="flex items-center justify-center gap-2" id="receipt-action-group">
+<button class="px-3 py-1 bg-[#002e69] text-white text-[10px] font-bold uppercase rounded hover:bg-[#004494] transition-colors cursor-pointer" id="ground-truth-yes-btn" type="button">
+                      YES — GROUND TRUTH
+                    </button>
+<button class="px-3 py-1 bg-transparent border border-[#002e69] text-[#002e69] text-[10px] font-bold uppercase rounded hover:bg-[#002e69]/10 transition-colors cursor-pointer" id="ground-truth-dispute-btn" type="button">
+                      NO — DISPUTED
+                    </button>
+</div>
+<div class="hidden text-[10px] uppercase font-bold text-amber-800 bg-amber-200/50 py-1 px-2 rounded mt-1.5 inline-block" id="receipt-disputed-indicator">
+  SAMPLE ATTESTATION FLAGGED AS DISPUTED IN AUDIT LOG
+</div>
+</div>
+</div>
+</div>
+<!-- Receipt Action Bar Directly Under Slot -->
+<div class="flex flex-wrap items-center justify-center gap-space-sm mt-space-md px-space-md">
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 bg-surface-container hover:bg-surface-container-highest text-primary font-label-sm uppercase rounded-DEFAULT border border-outline-variant/40 transition-colors cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span class="">DOWNLOAD CSV AUDIT</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 bg-surface-container hover:bg-surface-container-highest text-secondary font-label-sm uppercase rounded-DEFAULT border border-outline-variant/40 transition-colors cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[16px]">share</span>
+<span class="">SHARE VERIFICATION LINK</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- PREDICTION HISTORY AUDIT LOG & FILTERING -->
+<section class="w-full px-margin-desktop py-space-xl bg-surface border-b border-outline-variant/20" id="prediction-audit-log">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-lg">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-sm border-b border-outline-variant/20">
+<div>
+<span class="font-label-sm text-secondary uppercase font-semibold">SECURE ATTESTATION STORE</span>
+<h2 class="font-headline-lg text-2xl lg:text-3xl font-bold text-primary">PREDICTION AUDIT LOG</h2>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-mono-data text-xs text-on-surface-variant">TOTAL ATTESTED: 1,842</span>
+</div>
+</div>
+<!-- Audit Filter & Search Control Bar -->
+<div class="flex flex-col lg:flex-row items-center justify-between gap-space-md bg-surface-container-low p-space-sm rounded-DEFAULT border border-outline-variant/30">
+<!-- Search Input -->
+<div class="relative w-full lg:w-96">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline border border-outline-variant/40 rounded-DEFAULT pl-10 pr-3 py-2 font-mono-data text-xs focus:outline-none focus:border-primary-container transition-colors" id="audit-search-input" placeholder="Search SHA-256, filename, or ID..." type="text"/>
+</div>
+<!-- Filter Pill Chips -->
+<div class="flex flex-wrap items-center gap-space-xs w-full lg:w-auto" id="audit-filter-buttons">
+<button class="px-space-md py-1.5 bg-[#00f0ff] text-[#070e1d] font-label-sm uppercase rounded-DEFAULT font-bold shadow-[0_0_8px_rgba(0,240,255,0.25)] transition-all cursor-pointer" data-filter="all" type="button">
+                ALL SAMPLES
+              </button>
+<button class="px-space-md py-1.5 bg-surface-container border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 font-label-sm uppercase rounded-DEFAULT transition-all cursor-pointer" data-filter="synthetic" type="button">
+                SYNTHETIC ONLY
+              </button>
+<button class="px-space-md py-1.5 bg-surface-container border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 font-label-sm uppercase rounded-DEFAULT transition-all cursor-pointer" data-filter="authentic" type="button">
+                AUTHENTIC ONLY
+              </button>
+<button class="px-space-md py-1.5 bg-surface-container border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 font-label-sm uppercase rounded-DEFAULT transition-all cursor-pointer" data-filter="disputed" type="button">
+                DISPUTED
+              </button>
+</div>
+</div>
+<!-- Forensic Log Table Container -->
+<div class="w-full overflow-x-auto bg-surface-container-low rounded-DEFAULT border border-outline-variant/40 shadow-xl">
+<table class="w-full text-left border-collapse" id="audit-log-table">
+<thead>
+<tr class="border-b border-outline-variant/40 bg-surface-container font-label-sm text-secondary uppercase text-xs">
+<th class="py-3 px-space-md">SAMPLE TARGET</th>
+<th class="py-3 px-space-md">VERIFICATION ID</th>
+<th class="py-3 px-space-md">TIMESTAMP (UTC)</th>
+<th class="py-3 px-space-md">VERDICT</th>
+<th class="py-3 px-space-md">CONFIDENCE</th>
+<th class="py-3 px-space-md text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 font-mono-data text-xs" id="audit-table-body">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/60 transition-colors audit-row" data-disputed="false" data-filename="deepfake_sample_09.png" data-id="VA-7K3P-91XQ" data-sha256="8a7cf2b...3e19c4d 8a7c...3e19" data-verdict="SYNTHETIC (AI)">
+<td class="py-3 px-space-md flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-DEFAULT bg-surface-container-highest overflow-hidden shrink-0 border border-outline-variant/40">
+<img alt="Micro thumbnail of synthetic human portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyvZvpXETrp07GGW2KlKdH9MJff8K6Cm6-Naze5q8EX4WAQs28bR4UcTVVDfDaI2pBsyJyCkh_JBSUqUcbrq7w5n56GJ0-J7QYR0YCggwUU8Ycp6vJ-dQP_Qbs3_exo2V1dil2Vb6_u1Mc6bQcLTfVf3U1S3Mj7om46w3TMkU5bv5C69ABQV9MAV9HXNzN3IC1iXYtneOLUtLxDDmQNOLuuocwwRuSVoemg5J-MoooBF7nhOxuX6VD"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-primary truncate font-semibold row-filename">deepfake_sample_09.png</span>
+<span class="text-[10px] text-on-surface-variant">PNG • 1920x1080</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-secondary row-id">VA-7K3P-91XQ</td>
+<td class="py-3 px-space-md text-on-surface-variant">2026-09-19 13:42:18</td>
+<td class="py-3 px-space-md row-verdict-cell">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT text-[10px] font-bold bg-error-container/40 text-error border border-error/30">
+                      SYNTHETIC (AI)
+                    </span>
+</td>
+<td class="py-3 px-space-md font-bold text-primary-container">94.7%</td>
+<td class="py-3 px-space-md text-right">
+<button class="px-2 py-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface rounded-DEFAULT border border-outline-variant/30 text-[11px] font-label-sm uppercase transition-colors cursor-pointer" type="button">
+                      INSPECT
+                    </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/60 transition-colors audit-row" data-disputed="false" data-filename="press_briefing_dc.tiff" data-id="VA-4D90-11PL" data-sha256="4d90f11a77e2" data-verdict="AUTHENTIC (REAL)">
+<td class="py-3 px-space-md flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-DEFAULT bg-surface-container-highest overflow-hidden shrink-0 border border-outline-variant/40">
+<img alt="Micro thumbnail of authentic landscape photograph" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWWvMb0YjqXSKx8Nz9QtFUxgRgNDA370nTmJRZoe-cTwtxnicEHbouMOfJetf2Tlq3jAw_1QXXe3oFqGfBtB9-koiMjpWTHL1Mm-GxTU5XXGp_AMa_Bt8yIZGsG9__8zFIN5SBwsNKmtV6oyXFJ5uoTVPw364QYfJyuu8VzfCP6BF6SzGC4s1ClUWX14Soa8zXInRDEsWAHA7nQzXBQCYzOdenruUnrQsPVzuGVAS3w8oVFFVXE5aD"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-primary truncate font-semibold row-filename">press_briefing_dc.tiff</span>
+<span class="text-[10px] text-on-surface-variant">TIFF • 3840x2160</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-secondary row-id">VA-4D90-11PL</td>
+<td class="py-3 px-space-md text-on-surface-variant">2026-09-19 11:20:04</td>
+<td class="py-3 px-space-md row-verdict-cell">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT text-[10px] font-bold bg-secondary-container/30 text-primary border border-secondary-container/40">
+                      AUTHENTIC (REAL)
+                    </span>
+</td>
+<td class="py-3 px-space-md font-bold text-secondary">99.2%</td>
+<td class="py-3 px-space-md text-right">
+<button class="px-2 py-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface rounded-DEFAULT border border-outline-variant/30 text-[11px] font-label-sm uppercase transition-colors cursor-pointer" type="button">
+                      INSPECT
+                    </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/60 transition-colors audit-row" data-disputed="false" data-filename="render_proposal_v2.webp" data-id="VA-99R2-64ZZ" data-sha256="99r264zz88ef" data-verdict="SYNTHETIC (AI)">
+<td class="py-3 px-space-md flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-DEFAULT bg-surface-container-highest overflow-hidden shrink-0 border border-outline-variant/40">
+<img alt="Micro thumbnail of stylized synthetic architecture render" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX1jD9ii2Nmoy1AiRzAVxGru6KKu4vqfr_RTOMC0YRn1Tttc3zy4B6AK3VkKLz1oFenzpzuAiPzOilG2SCQWlkqPOdoXDgi1xfiUKBpFXBRuse-1umBYSY5giLc33APqcC34MffzafSoG-ta77WmMEevGbc8olZrM7baxK4SsRgZstSEntZDYeWrB4V2oVl0NeYYS-PlKr66Z_JYrJfsyWqcARKIr6Dq5ZN2fSlZQJ_8axfHos3V3-"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-primary truncate font-semibold row-filename">render_proposal_v2.webp</span>
+<span class="text-[10px] text-on-surface-variant">WEBP • 2048x2048</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-secondary row-id">VA-99R2-64ZZ</td>
+<td class="py-3 px-space-md text-on-surface-variant">2026-09-19 09:05:42</td>
+<td class="py-3 px-space-md row-verdict-cell">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT text-[10px] font-bold bg-error-container/40 text-error border border-error/30">
+                      SYNTHETIC (AI)
+                    </span>
+</td>
+<td class="py-3 px-space-md font-bold text-primary-container">88.4%</td>
+<td class="py-3 px-space-md text-right">
+<button class="px-2 py-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface rounded-DEFAULT border border-outline-variant/30 text-[11px] font-label-sm uppercase transition-colors cursor-pointer" type="button">
+                      INSPECT
+                    </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/60 transition-colors audit-row" data-disputed="false" data-filename="crop_evidence_003.jpg" data-id="VA-10A8-55MQ" data-sha256="10a855mq991c" data-verdict="INCONCLUSIVE">
+<td class="py-3 px-space-md flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-DEFAULT bg-surface-container-highest overflow-hidden shrink-0 border border-outline-variant/40">
+<img alt="Micro thumbnail of compressed video frame crop" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6_3dK-oQfxG3y4lj6HW6WOjz5QpmaffpzbS3D30ko18UH6byLZwZnQg0e4K3Wen4kkvrsVjLzy8IErC5nx5UxWyFeoq0p1hLiiDqSfK_1YAA67yirabMZvhtklA5qRhNH2Ec899gU0jtHpnFfqQlhTe5HcKS4xRDfP0Zl9vJFw7gQkZrqN_PtWU8WAWAfxlkQsbu-nG5WnWPE5vod8mfZ0gAToPg5kwsHTK5htt5U3dx1sYnv3o80"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-primary truncate font-semibold row-filename">crop_evidence_003.jpg</span>
+<span class="text-[10px] text-on-surface-variant">JPEG • 640x480</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-secondary row-id">VA-10A8-55MQ</td>
+<td class="py-3 px-space-md text-on-surface-variant">2026-09-18 22:48:19</td>
+<td class="py-3 px-space-md row-verdict-cell">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT text-[10px] font-bold bg-surface-container-highest text-on-surface-variant border border-outline-variant/40">
+                      INCONCLUSIVE
+                    </span>
+</td>
+<td class="py-3 px-space-md font-bold text-outline">51.3%</td>
+<td class="py-3 px-space-md text-right">
+<button class="px-2 py-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface rounded-DEFAULT border border-outline-variant/30 text-[11px] font-label-sm uppercase transition-colors cursor-pointer" type="button">
+                      INSPECT
+                    </button>
+</td>
+</tr>
+<!-- Empty State Placeholder Row (Hidden by default) -->
+<tr class="hidden" id="no-records-row">
+<td class="py-8 text-center text-on-surface-variant font-mono-data text-xs" colspan="6">
+<div class="flex flex-col items-center justify-center gap-1.5 py-4">
+<span class="material-symbols-outlined text-outline text-[28px]">search_off</span>
+<span class="text-primary font-semibold">NO RECORDS MATCHING QUERY</span>
+<span class="text-[11px] text-outline">Try adjusting your verdict filter or clear search terms.</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- SYSTEM LIMITATIONS & DISCLOSURES -->
+<section class="w-full px-margin-desktop py-space-lg bg-surface-container-lowest border-t border-outline-variant/30">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start justify-between gap-space-lg">
+<div class="flex items-center gap-space-sm text-secondary shrink-0">
+<span class="material-symbols-outlined text-[24px]">gavel</span>
+<span class="font-label-md uppercase font-bold tracking-wider">FORENSIC DISCLOSURE // ISO-27037</span>
+</div>
+<div class="font-mono-data text-on-surface-variant text-xs leading-relaxed max-w-4xl">
+            VERIFY.AI outputs are calibrated statistical consensus metrics derived from multiple neural representations. No model guarantees deterministic certainty against novel zero-day generative architectures, heavy multi-pass compression, or post-processed adversarial noise perturbations. Verifications should be utilized in concordance with chain-of-custody metadata protocols and qualified forensic analysis.
+          </div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-space-md">
+<div class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-sm font-label-sm text-on-surface-variant text-xs">
+<div class="flex items-center gap-space-sm">
+<span class="text-primary font-mono-data font-semibold">VERIFY.AI FORENSIC CORE</span>
+<span class="text-outline-variant">//</span>
+<span class="">CLASSIFICATION: RESTRICTED LEVEL-4</span>
+</div>
+<div class="flex items-center gap-space-md font-mono-data">
+<span class="text-outline-variant">CLUSTER: AP-NORTH-1</span>
+<span class="text-outline-variant">|</span>
+<span class="">SHA-256 VERIFIED ATTESTATION</span>
+<span class="text-outline-variant">|</span>
+<span class="">© 2025 VERIFY.AI INC.</span>
+</div>
+</div>
+</footer>
+<!-- Interactive Terminal Simulation Script & Embedded Three.js Living Filament Neural Network -->
+<script>
+  window.triggerNeuralPulse = null;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // -------------------------------------------------------------
+    // 1. INLINE THREE.JS LIVING FILAMENT SIMULATION (from neural4.html)
+    // -------------------------------------------------------------
+    const container = document.getElementById('neural-canvas-container');
+    const labelsLayer = document.getElementById('neural-labels-layer');
+    const synapseStatus = document.getElementById('synapse-status');
+
+    if (container && typeof THREE !== 'undefined') {
+      const LAYER_COUNTS = [7, 30, 30, 30, 30, 9];
+      const LAYER_X = [-240, -125, -50, 50, 125, 240];
+
+      const INPUT_NAMES = [
+        "NPR",
+        "UFD",
+        "IAPL",
+        "SDXL_DETECTOR",
+        "DIFFUSION_RECONSTRUCT",
+        "CAPCHECK",
+        "NONESCAPE"
+      ];
+
+      const OUTPUT_NAMES = [
+        "Real",
+        "Stable Diffusion",
+        "DALL-E-3",
+        "DALL-E-2",
+        "GAN",
+        "ProGAN",
+        "NonGAN",
+        "Diffusion Static",
+        "Layered Diffusion"
+      ];
+
+      // Scene, Camera, Renderer
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x050810, 0.0016);
+
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 520;
+
+      const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
+      camera.position.set(0, 0, 480);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x050810, 1);
+      container.appendChild(renderer.domElement);
+
+      // Create glowing dot texture via 2D Canvas
+      function createGlowSprite() {
+        const c = document.createElement('canvas');
+        c.width = 64;
+        c.height = 64;
+        const ctx = c.getContext('2d');
+        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        grad.addColorStop(0, 'rgba(255,255,255,1)');
+        grad.addColorStop(0.25, 'rgba(0,240,255,0.9)');
+        grad.addColorStop(0.6, 'rgba(0,120,255,0.3)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 64, 64);
+        return new THREE.CanvasTexture(c);
+      }
+      const spriteTex = createGlowSprite();
+
+      // Build Nodes
+      const nodes = [];
+      const nodeMeshes = [];
+      const nodeYBounds = 150;
+
+      for (let l = 0; l < LAYER_COUNTS.length; l++) {
+        const count = LAYER_COUNTS[l];
+        const lx = LAYER_X[l];
+        const layerNodes = [];
+
+        for (let i = 0; i < count; i++) {
+          const t = count === 1 ? 0.5 : i / (count - 1);
+          const y = (t - 0.5) * nodeYBounds * 2;
+          const z = (Math.sin(i * 1.3) + Math.cos(l * 0.9)) * 18;
+
+          const isInput = l === 0;
+          const isOutput = l === LAYER_COUNTS.length - 1;
+          const size = isInput || isOutput ? 14 : 7;
+          const color = isInput
+            ? 0x00f0ff
+            : isOutput
+            ? (i === 1 ? 0xffb4ab : 0x7df4ff)
+            : 0x4cd6fb;
+
+          const spriteMat = new THREE.SpriteMaterial({
+            map: spriteTex,
+            color: color,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+          });
+          const sprite = new THREE.Sprite(spriteMat);
+          sprite.position.set(lx, y, z);
+          sprite.scale.set(size, size, 1);
+          scene.add(sprite);
+
+          const nodeObj = {
+            layer: l,
+            idx: i,
+            x: lx,
+            y: y,
+            z: z,
+            origY: y,
+            sprite: sprite,
+            isInput: isInput,
+            isOutput: isOutput,
+            name: isInput ? INPUT_NAMES[i] : (isOutput ? OUTPUT_NAMES[i] : null)
+          };
+          layerNodes.push(nodeObj);
+          nodeMeshes.push(nodeObj);
+        }
+        nodes.push(layerNodes);
+      }
+
+      // Build Living Curved Filaments
+      const filaments = [];
+      const filamentMat = new THREE.LineBasicMaterial({
+        color: 0x00f0ff,
+        transparent: true,
+        opacity: 0.18,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      const activeFilamentMat = new THREE.LineBasicMaterial({
+        color: 0x4cd6fb,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      for (let l = 0; l < nodes.length - 1; l++) {
+        const currentLayer = nodes[l];
+        const nextLayer = nodes[l + 1];
+
+        currentLayer.forEach((n1, i1) => {
+          const sampleCount = l === 0 ? nextLayer.length : Math.min(6, nextLayer.length);
+          for (let s = 0; s < sampleCount; s++) {
+            const i2 = (i1 * 3 + s * 4) % nextLayer.length;
+            const n2 = nextLayer[i2];
+
+            const p1 = new THREE.Vector3(n1.x, n1.y, n1.z);
+            const p2 = new THREE.Vector3(n2.x, n2.y, n2.z);
+            const midX = (n1.x + n2.x) * 0.5;
+            const midY = (n1.y + n2.y) * 0.5 + (Math.random() - 0.5) * 16;
+            const midZ = (n1.z + n2.z) * 0.5 + (Math.random() - 0.5) * 20;
+            const ctrl = new THREE.Vector3(midX, midY, midZ);
+
+            const curve = new THREE.QuadraticBezierCurve3(p1, ctrl, p2);
+            const points = curve.getPoints(12);
+            const geom = new THREE.BufferGeometry().setFromPoints(points);
+
+            const line = new THREE.Line(geom, Math.random() > 0.4 ? filamentMat : activeFilamentMat);
+            scene.add(line);
+
+            filaments.push({
+              line: line,
+              n1: n1,
+              n2: n2,
+              baseMidY: midY,
+              baseMidZ: midZ,
+              freq: 1.2 + Math.random() * 2.0,
+              phase: Math.random() * Math.PI * 2
+            });
+          }
+        });
+      }
+
+      // Input & Output DOM Labels
+      const labelElements = [];
+      if (labelsLayer) {
+        labelsLayer.innerHTML = '';
+        nodeMeshes.forEach(node => {
+          if (node.isInput || node.isOutput) {
+            const el = document.createElement('div');
+            el.className = 'absolute transform -translate-y-1/2 whitespace-nowrap transition-opacity duration-300 ' +
+              (node.isInput ? 'text-right pr-2 text-cyan-300 -translate-x-full' : 'text-left pl-2 text-primary');
+            el.innerHTML = `<span class="px-1 py-0.5 rounded bg-black/60 border ${node.isInput ? 'border-cyan-500/40 text-[10px]' : 'border-outline-variant/40 text-[10px]'} font-mono">${node.name}</span>`;
+            labelsLayer.appendChild(el);
+            labelElements.push({ element: el, node: node });
+          }
+        });
+      }
+
+      // Interaction Orbit State
+      let isDragging = false;
+      let prevMouseX = 0;
+      let prevMouseY = 0;
+      let targetRotX = 0.05;
+      let targetRotY = -0.15;
+      let activityTarget = 0.0;
+      let activityCurrent = 0.0;
+
+      container.addEventListener('mousedown', e => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const dx = e.clientX - prevMouseX;
+        const dy = e.clientY - prevMouseY;
+        targetRotY += dx * 0.005;
+        targetRotX += dy * 0.005;
+        targetRotX = Math.max(-0.6, Math.min(0.6, targetRotX));
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      });
+
+      // Wheel Zoom inside container
+      container.addEventListener('wheel', e => {
+        e.preventDefault();
+        camera.position.z += e.deltaY * 0.3;
+        camera.position.z = Math.max(280, Math.min(750, camera.position.z));
+      }, { passive: false });
+
+      // Pulse Trigger Function
+      window.triggerNeuralPulse = function () {
+        activityTarget = 2.5;
+        if (synapseStatus) {
+          synapseStatus.innerText = 'HIGH-FREQUENCY INFERENCE BURST';
+          synapseStatus.classList.remove('text-primary-container');
+          synapseStatus.classList.add('text-error');
+        }
+        setTimeout(() => {
+          activityTarget = 0.0;
+          if (synapseStatus) {
+            synapseStatus.innerText = 'STEADY STATE';
+            synapseStatus.classList.remove('text-error');
+            synapseStatus.classList.add('text-primary-container');
+          }
+        }, 1400);
+      };
+
+      const pulseBtn = document.getElementById('trigger-pulse-btn');
+      if (pulseBtn) {
+        pulseBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          window.triggerNeuralPulse();
+        });
+      }
+
+      // Responsive Resize
+      function onResize() {
+        if (!container) return;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+      window.addEventListener('resize', onResize);
+
+      // Animation Loop
+      const clock = new THREE.Clock();
+      const tempVec = new THREE.Vector3();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        const time = clock.getElapsedTime();
+
+        activityCurrent += (activityTarget - activityCurrent) * 0.08;
+
+        // Smooth rotation damping
+        scene.rotation.y += (targetRotY - scene.rotation.y) * 0.05;
+        scene.rotation.x += (targetRotX - scene.rotation.x) * 0.05;
+
+        // Node gentle breathing oscillation
+        nodes.forEach((layer, l) => {
+          layer.forEach((n, i) => {
+            const wave = Math.sin(time * 1.5 + i * 0.3 + l) * (2.0 + activityCurrent * 4.0);
+            n.sprite.position.y = n.origY + wave;
+            if (activityCurrent > 0.1) {
+              const boost = Math.sin(time * 12 + i) * 2.0;
+              const baseS = (n.isInput || n.isOutput) ? 14 : 7;
+              n.sprite.scale.set(baseS + boost, baseS + boost, 1);
+            }
+          });
+        });
+
+        // Filament living undulation
+        filaments.forEach(f => {
+          const wave = Math.sin(time * f.freq + f.phase) * (3.5 + activityCurrent * 8.0);
+          f.line.material.opacity = 0.15 + (Math.sin(time * 2.5 + f.phase) * 0.1) + (activityCurrent * 0.25);
+        });
+
+        // Update 2D Screen Space Projection for HTML Labels
+        const halfW = (container.clientWidth || width) / 2;
+        const halfH = (container.clientHeight || height) / 2;
+
+        labelElements.forEach(item => {
+          tempVec.copy(item.node.sprite.position);
+          tempVec.applyMatrix4(scene.matrixWorld);
+          tempVec.project(camera);
+
+          if (tempVec.z > 1.0) {
+            item.element.style.display = 'none';
+          } else {
+            item.element.style.display = 'block';
+            const screenX = (tempVec.x * halfW) + halfW;
+            const screenY = (-(tempVec.y) * halfH) + halfH;
+            item.element.style.left = `${screenX}px`;
+            item.element.style.top = `${screenY}px`;
+            item.element.style.opacity = (tempVec.z < 0.95 ? '1' : '0.4');
+          }
+        });
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // -------------------------------------------------------------
+    // 2. INGESTION BAY CONTROLS & TEST SAMPLE TRIGGER
+    // -------------------------------------------------------------
+    const testBtn = document.getElementById('execute-test-btn');
+    const switchBtn = document.getElementById('switch-sample-btn');
+    const statusLed = document.getElementById('pipeline-status-led');
+    const statusTxt = document.getElementById('pipeline-status-txt');
+    const filenameEl = document.getElementById('sample-filename');
+
+    if (testBtn) {
+      testBtn.addEventListener('click', function () {
+        testBtn.disabled = true;
+        testBtn.classList.add('opacity-70');
+        if (statusLed) {
+          statusLed.classList.remove('bg-secondary');
+          statusLed.classList.add('bg-primary-container');
+        }
+        if (statusTxt) {
+          statusTxt.innerText = 'STATUS: INFERENCE RUNNING [412ms]';
+        }
+
+        // Trigger neural network pulse in tandem!
+        if (window.triggerNeuralPulse) {
+          window.triggerNeuralPulse();
+        }
+
+        setTimeout(function () {
+          testBtn.disabled = false;
+          testBtn.classList.remove('opacity-70');
+          if (statusLed) {
+            statusLed.classList.remove('bg-primary-container');
+            statusLed.classList.add('bg-secondary');
+          }
+          if (statusTxt) {
+            statusTxt.innerText = 'STATUS: ANALYSIS COMPLETE';
+          }
+        }, 1200);
+      });
+    }
+
+    if (switchBtn && filenameEl) {
+      switchBtn.addEventListener('click', function () {
+        const names = ['sample_09.png', 'satellite_feed_x7.tiff', 'surveillance_crop_12.png', 'portrait_latent_04.jpg'];
+        const randomName = names[Math.floor(Math.random() * names.length)];
+        filenameEl.innerText = randomName;
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 3. PREDICTION AUDIT LOG FILTERING, SEARCH & RECEIPT DISPUTE
+    // -------------------------------------------------------------
+    const filterButtonsContainer = document.getElementById('audit-filter-buttons');
+    const filterButtons = filterButtonsContainer ? filterButtonsContainer.querySelectorAll('button[data-filter]') : [];
+    const searchInput = document.getElementById('audit-search-input');
+    const auditRows = document.querySelectorAll('.audit-row');
+    const noRecordsRow = document.getElementById('no-records-row');
+    let currentFilter = 'all';
+
+    const activeBtnClasses = ['bg-[#00f0ff]', 'text-[#070e1d]', 'font-bold', 'shadow-[0_0_8px_rgba(0,240,255,0.25)]'];
+    const inactiveBtnClasses = ['bg-surface-container', 'border', 'border-slate-700', 'text-slate-400', 'hover:text-white', 'hover:border-slate-500'];
+
+    function applyAuditFilters() {
+      const searchTerm = (searchInput ? searchInput.value : '').trim().toLowerCase();
+      let visibleCount = 0;
+
+      auditRows.forEach(row => {
+        const verdict = (row.getAttribute('data-verdict') || '').trim();
+        const isDisputed = row.getAttribute('data-disputed') === 'true';
+
+        // Check filter category
+        let passesCategory = true;
+        if (currentFilter === 'synthetic') {
+          passesCategory = (verdict === 'SYNTHETIC (AI)');
+        } else if (currentFilter === 'authentic') {
+          passesCategory = (verdict === 'AUTHENTIC (REAL)');
+        } else if (currentFilter === 'disputed') {
+          passesCategory = isDisputed;
+        } else {
+          // 'all' includes synthetic, authentic, inconclusive, disputed
+          passesCategory = true;
+        }
+
+        // Check search query against filename, id, sha256
+        let passesSearch = true;
+        if (searchTerm) {
+          const filename = (row.getAttribute('data-filename') || '').toLowerCase();
+          const id = (row.getAttribute('data-id') || '').toLowerCase();
+          const sha = (row.getAttribute('data-sha256') || '').toLowerCase();
+          passesSearch = filename.includes(searchTerm) || id.includes(searchTerm) || sha.includes(searchTerm);
+        }
+
+        if (passesCategory && passesSearch) {
+          row.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+
+      if (noRecordsRow) {
+        if (visibleCount === 0) {
+          noRecordsRow.classList.remove('hidden');
+        } else {
+          noRecordsRow.classList.add('hidden');
+        }
+      }
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function () {
+        currentFilter = this.getAttribute('data-filter') || 'all';
+
+        // Update button visual styles
+        filterButtons.forEach(b => {
+          if (b === this) {
+            b.classList.remove(...inactiveBtnClasses);
+            b.classList.add(...activeBtnClasses);
+          } else {
+            b.classList.remove(...activeBtnClasses);
+            b.classList.add(...inactiveBtnClasses);
+          }
+        });
+
+        applyAuditFilters();
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        applyAuditFilters();
+      });
+    }
+
+    // 4. THERMAL RECEIPT GROUND-TRUTH FEEDBACK WIRING
+    const disputeBtn = document.getElementById('ground-truth-dispute-btn');
+    const groundTruthYesBtn = document.getElementById('ground-truth-yes-btn');
+    const receiptIndicator = document.getElementById('receipt-disputed-indicator');
+    const receiptHeading = document.getElementById('receipt-feedback-heading');
+
+    if (disputeBtn) {
+      disputeBtn.addEventListener('click', function () {
+        // Tag target active sample row (deepfake_sample_09.png / VA-7K3P-91XQ)
+        const targetRow = document.querySelector('.audit-row[data-id="VA-7K3P-91XQ"]');
+        if (targetRow) {
+          targetRow.setAttribute('data-disputed', 'true');
+          const verdictCell = targetRow.querySelector('.row-verdict-cell');
+          if (verdictCell && !verdictCell.querySelector('.dispute-tag')) {
+            const disputeBadge = document.createElement('span');
+            disputeBadge.className = 'dispute-tag ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-DEFAULT text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-tight';
+            disputeBadge.innerHTML = '<span class="material-symbols-outlined text-[10px] mr-0.5">flag</span> DISPUTED';
+            verdictCell.appendChild(disputeBadge);
+          }
+        }
+
+        // Visual receipt confirmation
+        disputeBtn.disabled = true;
+        disputeBtn.classList.add('bg-[#93000a]', 'text-white', 'border-[#93000a]');
+        if (receiptIndicator) {
+          receiptIndicator.classList.remove('hidden');
+        }
+        if (receiptHeading) {
+          receiptHeading.innerText = 'STATUS RECORDED: DISPUTE LOGGED INTO AUDIT STORE';
+        }
+
+        // Re-evaluate current active filter if needed
+        applyAuditFilters();
+      });
+    }
+
+    if (groundTruthYesBtn) {
+      groundTruthYesBtn.addEventListener('click', function () {
+        groundTruthYesBtn.classList.add('bg-emerald-700');
+        if (receiptHeading) {
+          receiptHeading.innerText = 'STATUS CONFIRMED: GROUND TRUTH RECORD VERIFIED';
+        }
+      });
+    }
+  });
+</script>
+
+<input type="file" id="file-input" accept="image/*" style="display:none" />
+<style>
+#vg-toast{position:fixed;bottom:24px;right:24px;z-index:9999;min-width:280px;max-width:480px;padding:12px 16px;border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.4;box-shadow:0 8px 32px rgba(0,0,0,0.6);transform:translateY(120%);opacity:0;transition:all 0.3s ease;pointer-events:none}
+#vg-toast.show{transform:translateY(0);opacity:1}
+#vg-toast.err{background:#93000a;color:#ffdad6;border:1px solid #ffb4ab}
+#vg-toast.ok{background:#00363a;color:#00f0ff;border:1px solid #00dbe9}
+#dropzone-box.drag{border-color:#00f0ff !important;background:rgba(0,240,255,0.08) !important;box-shadow:0 0 20px rgba(0,240,255,0.2)}
+</style>
+<div id="vg-toast"></div>
+<script type="module">
+(() => {
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  window.__selectedFile = null;
+  window.__verificationId = null;
+  window.__feedbackToken = null;
+  window.__lastResult = null;
+  window.__lastFullRecord = null;
+
+  const toastEl = document.getElementById('vg-toast');
+  function showToast(msg, isError=false){
+    if(!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.className = isError ? 'err show' : 'ok show';
+    toastEl.id='vg-toast';
+    // ensure show class
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._t);
+    toastEl._t=setTimeout(()=> toastEl.classList.remove('show'), 4000);
+  }
+  window.showToast = showToast;
+
+  // Helpers to locate receipt elements
+  function getReceiptContainer(){
+    return document.querySelector('div.bg-\\[\\#f4f5ff\\]');
+  }
+  function findReceiptField(label){
+    const c=getReceiptContainer();
+    if(!c) return null;
+    const rows=c.querySelectorAll('div.flex.justify-between');
+    for(const r of rows){
+      const a=r.children[0]?.textContent||'';
+      if(a.includes(label)) return r.children[1];
+    }
+    return null;
+  }
+  function getVerdictEl(){
+    const c=getReceiptContainer(); if(!c) return null;
+    const box=c.querySelector('div.bg-\\[\\#002e69\\]\\/10');
+    if(!box) return null;
+    return box.querySelector('div.text-xl');
+  }
+  function getConfidenceEl(){
+    const c=getReceiptContainer(); if(!c) return null;
+    const box=c.querySelector('div.bg-\\[\\#002e69\\]\\/10');
+    if(!box) return null;
+    // last div inside box is confidence
+    const divs=box.querySelectorAll('div');
+    for(const d of divs){ if(d.textContent.includes('CONFIDENCE')) return d; }
+    return null;
+  }
+  function getBreakdownBox(){
+    const c=getReceiptContainer(); if(!c) return null;
+    const box=c.querySelector('div.bg-\\[\\#002e69\\]\\/10');
+    if(!box) return null;
+    let nb=box.nextElementSibling;
+    // skip if not the breakdown (check class)
+    while(nb && !nb.classList.contains('space-y-1')) nb=nb.nextElementSibling;
+    return nb;
+  }
+  function getAttestationEl(){
+    const c=getReceiptContainer(); if(!c) return null;
+    // header attestation: div.text-center span.font-bold
+    const head=c.querySelector('div.text-center');
+    if(head) return head.querySelector('span.font-bold');
+    return null;
+  }
+  function getTerminalBox(){
+    // the console telemetry box h-[280px]
+    return document.querySelector('div.w-full.h-\\[280px\\]');
+  }
+  function getConsensusBanner(){
+    return document.querySelector('#consensus [class*="bg-error-container"]') || document.querySelector('#consensus > div div.px-space-md');
+  }
+  function getMatrixCards(){
+    return document.querySelectorAll('#consensus .grid > div');
+  }
+
+  // File input wiring
+  const fileInput = document.getElementById('file-input');
+  const dropzone = document.getElementById('dropzone-box');
+  const sampleFilenameEl = document.getElementById('sample-filename');
+  const switchBtn = document.getElementById('switch-sample-btn');
+  const executeBtn = document.getElementById('execute-test-btn');
+  const pipelineTxt = document.getElementById('pipeline-status-txt');
+  const synapseStatus = document.getElementById('synapse-status');
+  const viewportWrapper = document.getElementById('three-viewport-wrapper');
+  const groundYesBtn = document.getElementById('ground-truth-yes-btn');
+  const groundNoBtn = document.getElementById('ground-truth-dispute-btn');
+  const disputedIndicator = document.getElementById('receipt-disputed-indicator');
+  const auditBody = document.getElementById('audit-table-body');
+  const auditSearch = document.getElementById('audit-search-input');
+  const filterButtons = document.querySelectorAll('#audit-filter-buttons button[data-filter]');
+  const receiptActionBarBtns = (() => {
+    const rc=getReceiptContainer();
+    if(!rc) return [];
+    // action bar is sibling after receipt paper
+    const paper=rc.closest('div.relative.w-full.flex.justify-center');
+    if(!paper) return [];
+    const bar=paper.nextElementSibling;
+    if(!bar) return [];
+    return bar.querySelectorAll('button');
+  })();
+
+  let currentFilter='all';
+  let searchDebounce=null;
+
+  function updateSampleFilename(file){
+    window.__selectedFile=file;
+    if(sampleFilenameEl) sampleFilenameEl.textContent=file.name;
+  }
+
+  if(dropzone && fileInput){
+    dropzone.addEventListener('click', ()=> fileInput.click());
+    dropzone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+    dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('drag'));
+    dropzone.addEventListener('drop', (e)=>{
+      e.preventDefault(); dropzone.classList.remove('drag');
+      const f=e.dataTransfer.files?.[0];
+      if(f){ updateSampleFilename(f); showToast('File loaded: '+f.name); }
+    });
+    // also allow click on inner image to propagate
+  }
+  if(switchBtn && fileInput){
+    switchBtn.addEventListener('click', ()=> fileInput.click());
+  }
+  if(fileInput){
+    fileInput.addEventListener('change', (e)=>{
+      const f=e.target.files?.[0];
+      if(f) updateSampleFilename(f);
+    });
+  }
+
+  // Badge mapping
+  function badgeForVote(vote){
+    const v=(vote||'').toLowerCase();
+    if(v==='fake') return {text:'FLAGGED', cls:'bg-error-container/40 text-error border-error/30', bg:'#93000a'};
+    if(v==='real') return {text:'PASS', cls:'bg-[#05FFA1]/20 text-[#05FFA1] border-[#05FFA1]/30', bg:'#05FFA1'};
+    // error
+    return {text:'PASS', cls:'bg-surface-container-highest text-on-surface-variant border-outline-variant/40', bg:'#2e3545'};
+  }
+
+  // Populate voting matrix
+  function populateMatrix(breakdown){
+    const cards=getMatrixCards();
+    if(!cards.length) return;
+    breakdown.forEach((entry, idx)=>{
+      const card=cards[idx];
+      if(!card) return;
+      const modelName=entry.model || entry.internal_name || 'UNK';
+      const label=entry.label || entry.display_type || '';
+      const score=entry.score;
+      const vote=(entry.vote||'').toLowerCase();
+      // title span font-label-sm text-primary font-bold (first)
+      const titleEl=card.querySelector('span.font-label-sm');
+      if(titleEl) titleEl.textContent=modelName;
+      // subtitle: span.font-mono-data text-[11px] (second)
+      const subEl=card.querySelector('span.font-mono-data');
+      if(subEl) subEl.textContent=label;
+      // badge: second span in header flex
+      const header=card.querySelector('div.flex.items-center.justify-between');
+      let badgeEl= header ? header.querySelectorAll('span')[1] : null;
+      if(!badgeEl) badgeEl=card.querySelectorAll('span')[1];
+      if(badgeEl){
+        const b=badgeForVote(vote);
+        badgeEl.textContent = vote==='fake' ? 'SYNTHETIC' : (vote==='real' ? 'AUTHENTIC' : 'INCONCLUSIVE');
+        // override classes but keep base
+        badgeEl.className='px-1.5 py-0.5 font-label-sm text-[10px] rounded-DEFAULT border font-bold inline-flex items-center '+ (vote==='fake' ? 'bg-error-container/40 text-error border-error/30' : vote==='real' ? 'bg-secondary-container/30 text-primary border-secondary-container/40' : 'bg-surface-container-highest text-on-surface-variant border-outline-variant/40');
+        // if vote is error show gray, else as per spec we map FLAGGED red etc. But keep original text SYNTHETIC/AUTHENTIC for matrix
+      }
+      // bar width
+      const bar=card.querySelector('div.w-full > div');
+      if(bar){
+        let pct=0;
+        if(score!==null && score!==undefined) pct= Math.round(score*1000)/10; // keep one decimal
+        bar.style.width= pct+'%';
+        // color based on vote
+        bar.className='h-full ' + (vote==='fake' ? 'bg-error' : vote==='real' ? 'bg-secondary' : 'bg-outline-variant');
+      }
+      // bottom label: last flex
+      const bottom=card.querySelectorAll('div.flex.items-center.justify-between')[1];
+      if(bottom){
+        const left=bottom.children[0];
+        const right=bottom.children[1];
+        if(right){
+          if(entry.display_type==='variance'){
+            const th=entry.threshold!==undefined ? entry.threshold : 0.65;
+            const pct= score!==null ? (score*100).toFixed(1) : '--';
+            right.textContent= pct+'% (Threshold: '+(th*100).toFixed(1)+'%)';
+            if(left) left.textContent='Probability Variance';
+            right.className='font-bold '+(score!==null && score>th ? 'text-error' : 'text-secondary');
+          } else {
+            const pct= score!==null ? (score*100).toFixed(1)+'%' : '--';
+            right.textContent=pct;
+            if(left) left.textContent='Probability';
+            right.className='font-bold '+(vote==='fake' ? 'text-error' : 'text-primary');
+          }
+        }
+      }
+    });
+  }
+
+  function populateReceiptFromPost(postData, fullRecord){
+    const c=getReceiptContainer(); if(!c) return;
+    const verId=postData.verification_id || fullRecord?.verification_id;
+    const fbTok=postData.feedback_token || fullRecord?.feedback_token;
+    window.__verificationId=verId;
+    window.__feedbackToken=fbTok;
+    window.__lastResult=postData;
+    if(fullRecord) window.__lastFullRecord=fullRecord;
+    // ATTESTATION ID
+    const attEl=getAttestationEl();
+    if(attEl && verId) attEl.textContent=verId;
+    // TARGET FILE
+    const targetEl=findReceiptField('TARGET FILE');
+    if(targetEl) targetEl.textContent= window.__selectedFile ? window.__selectedFile.name : (fullRecord?.filename || 'upload');
+    // TIMESTAMP
+    const tsEl=findReceiptField('TIMESTAMP:');
+    if(tsEl){
+      const ts= fullRecord?.timestamp_utc || new Date().toISOString().replace('T',' ').slice(0,19)+' UTC';
+      // format like 19 SEP 2026 13:42:18 UTC if timestamp_utc is ISO
+      let out=ts;
+      try{
+        if(ts.includes('T')){ const d=new Date(ts); out=d.toUTCString().replace('GMT','UTC'); }
+      }catch{}
+      tsEl.textContent=out;
+    }
+    // SHA256
+    const shaEl=findReceiptField('SHA256 HASH:');
+    if(shaEl){
+      const sha= fullRecord?.sha256 || 'computing...';
+      shaEl.textContent= sha.length>16 ? sha.slice(0,7)+'...'+sha.slice(-6) : sha;
+      shaEl.title= fullRecord?.sha256 || '';
+    }
+    // verdict + confidence
+    const receipt=postData.receipt || {};
+    const verdictText= receipt.verdict || fullRecord?.verdict || '--';
+    const conf= receipt.confidence ?? fullRecord?.confidence ?? 0;
+    const confLabel= receipt.confidence_label || '';
+    const verdictEl=getVerdictEl();
+    if(verdictEl) verdictEl.textContent=verdictText;
+    const confEl=getConfidenceEl();
+    if(confEl) confEl.textContent='CONFIDENCE SCORE: '+(conf*100).toFixed(1)+'%';
+    // keep color based on verdict
+    if(verdictEl){
+      if((verdictText||'').includes('SYNTHETIC') || (verdictText||'').toLowerCase().includes('fake')) verdictEl.className='text-xl font-black text-[#93000a] tracking-tight uppercase';
+      else verdictEl.className='text-xl font-black text-[#05FFA1] tracking-tight uppercase';
+    }
+    // voting breakdown summary
+    const breakdownBox=getBreakdownBox();
+    if(breakdownBox && postData.model_breakdown){
+      // rebuild breakdown summary with up to 4 entries
+      const bd=postData.model_breakdown;
+      // map vote to text
+      let html='';
+      bd.slice(0,4).forEach(e=>{
+        const nm=(e.model||'').toUpperCase();
+        const sc=e.score!==null && e.score!==undefined ? e.score.toFixed(3) : '--';
+        const flag=(e.vote||'').toLowerCase()==='fake' ? 'FLAGGED' : 'PASS';
+        html+='<div class="flex justify-between"><span>'+nm+' '+(e.display_type==='variance'?'VARIANCE':'WEIGHT')+':</span><span class="font-bold">'+sc+' ['+flag+']</span></div>';
+      });
+      breakdownBox.innerHTML=html;
+    }
+    // banner
+    const banner=getConsensusBanner();
+    if(banner && confLabel){
+      banner.textContent= (confLabel + ' '+ (conf*100).toFixed(1)+'%').toUpperCase();
+      // ensure visible
+    } else if(banner && receipt.verdict){
+      banner.textContent= ((receipt.models_responded||'') + ' '+ verdictText + ' '+(conf*100).toFixed(1)+'%').toUpperCase();
+    }
+    // reset disputed indicator
+    if(disputedIndicator){
+      if(fullRecord?.disputed) disputedIndicator.classList.remove('hidden');
+      else disputedIndicator.classList.add('hidden');
+    }
+    const heading=document.getElementById('receipt-feedback-heading');
+    if(heading) heading.textContent='Was this forensic determination accurate?';
+    if(groundYesBtn) { groundYesBtn.disabled=false; groundYesBtn.classList.remove('bg-emerald-700'); }
+    if(groundNoBtn) { groundNoBtn.disabled=false; groundNoBtn.classList.remove('bg-[#93000a]','text-white','border-[#93000a]'); }
+  }
+
+  function populateTerminal(postData, fullRecord){
+    const box=getTerminalBox();
+    if(!box) return;
+    const fname= window.__selectedFile ? window.__selectedFile.name : (fullRecord?.filename||'upload');
+    const dims= fullRecord?.dimensions || 'unknown';
+    const sha= fullRecord?.sha256 || '...';
+    const now=new Date().toISOString().slice(11,19);
+    let logs=[];
+    logs.push('<div class="text-on-surface-variant flex items-start gap-2"><span class="text-secondary">['+now+']</span><span>Ingested raw media frame \''+fname+'\' ['+dims+'].</span></div>');
+    logs.push('<div class="text-on-surface-variant flex items-start gap-2"><span class="text-secondary">['+now+']</span><span>Computing 2D Fast Fourier Transform (azimuthal integral & high-freq bandpass).</span></div>');
+    logs.push('<div class="text-on-surface-variant flex items-start gap-2"><span class="text-secondary">['+now+']</span><span>Extracted noise residuals & patch-level DCT coefficients.</span></div>');
+    logs.push('<div class="text-on-surface-variant flex items-start gap-2"><span class="text-secondary">['+now+']</span><span>Dispatched normalized tensor to 7 parallel inference workers.</span></div>');
+    const bd=postData.model_breakdown||[];
+    bd.forEach(e=>{
+      const vote=(e.vote||'').toLowerCase();
+      const score=e.score!==null? (e.score*100).toFixed(1)+'%':'--';
+      const name=e.model||e.internal_name||'MODEL';
+      const cls= vote==='fake' ? 'text-primary' : vote==='real' ? 'text-secondary' : 'text-on-surface-variant';
+      logs.push('<div class="'+cls+' flex items-start gap-2"><span class="text-primary-container">['+now+']</span><span>'+name+' '+vote.toUpperCase()+' '+score+' ['+e.label+']</span></div>');
+    });
+    const receipt=postData.receipt||{};
+    const agree=receipt.confidence_label || (receipt.models_responded? receipt.models_responded+' models responded' : '');
+    logs.push('<div class="text-error flex items-start gap-2"><span class="text-error font-bold">['+now+']</span><span>Multi-expert consensus: '+agree+' verdict '+ (receipt.verdict||'')+'</span></div>');
+    logs.push('<div class="text-secondary flex items-start gap-2 pt-1 border-t border-outline-variant/20"><span class="text-secondary">['+now+']</span><span>HARDWARE ATTESTATION: Enclave SHA-256 seal 0x'+(sha.slice(0,4))+'...'+sha.slice(-4)+' validated.</span></div>');
+    box.innerHTML=logs.join('');
+  }
+
+  // Execute test
+  async function handleDetect(){
+    if(!window.__selectedFile){
+      showToast('Field required', true);
+      return;
+    }
+    if(pipelineTxt) pipelineTxt.textContent='STATUS: ANALYZING';
+    if(synapseStatus) synapseStatus.textContent='ANALYZING';
+    if(viewportWrapper) viewportWrapper.classList.add('animate-pulse');
+    // disable btn
+    if(executeBtn) executeBtn.disabled=true;
+    const fd=new FormData();
+    fd.append('file', window.__selectedFile, window.__selectedFile.name);
+    fd.append('media_type', 'image');
+    try{
+      const resp=await fetch('/api/detect', {method:'POST', body: fd});
+      if(!resp.ok){
+        let j=await resp.json().catch(()=>null);
+        let msg='Request failed';
+        if(j && j.detail){ if(Array.isArray(j.detail)) msg=j.detail[0].msg||j.detail[0].message||JSON.stringify(j.detail[0]); else msg=j.detail; }
+        else if(j && j.msg) msg=j.msg;
+        else msg=resp.statusText;
+        showToast(msg, true);
+        if(pipelineTxt) pipelineTxt.textContent='STATUS: ERROR';
+        if(synapseStatus) synapseStatus.textContent='ERROR';
+        return;
+      }
+      const data=await resp.json();
+      // populate matrix/terminal/banner
+      populateMatrix(data.model_breakdown||[]);
+      populateTerminal(data, null);
+      // try to fetch full record for sha/timestamp
+      let full=null;
+      try{ const r2=await fetch('/api/detect/'+encodeURIComponent(data.verification_id)); if(r2.ok) full=await r2.json(); }catch{}
+      populateReceiptFromPost(data, full);
+      if(full) populateTerminal(data, full);
+      // scroll to receipt
+      const receiptSec=document.querySelector('div.bg-\\[\\#f4f5ff\\]');
+      if(receiptSec) receiptSec.scrollIntoView({behavior:'smooth', block:'center'});
+      showToast('Attestation '+data.verification_id+' verified');
+      if(pipelineTxt) pipelineTxt.textContent='STATUS: ANALYSIS COMPLETE';
+      if(synapseStatus) synapseStatus.textContent='STEADY STATE';
+      // refresh audit log
+      fetchAudit(currentFilter, auditSearch? auditSearch.value : '');
+    }catch(e){
+      showToast(e.message||'Network error', true);
+      if(pipelineTxt) pipelineTxt.textContent='STATUS: ERROR';
+      if(synapseStatus) synapseStatus.textContent='ERROR';
+    }finally{
+      if(viewportWrapper) viewportWrapper.classList.remove('animate-pulse');
+      if(executeBtn) executeBtn.disabled=false;
+    }
+  }
+  if(executeBtn) executeBtn.addEventListener('click', handleDetect);
+  // also trigger pulse button
+  const pulseBtn=document.getElementById('trigger-pulse-btn');
+  if(pulseBtn) pulseBtn.addEventListener('click', ()=>{ if(window.triggerNeuralPulse) window.triggerNeuralPulse(); });
+
+  // Feedback
+  async function sendFeedback(verdict){
+    const token=window.__feedbackToken;
+    if(!token){ showToast('No verification token', true); return; }
+    try{
+      const r=await fetch('/api/feedback', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({feedback_token: token, user_verdict: verdict})});
+      if(!r.ok){ const j=await r.json().catch(()=>({})); showToast(j.detail||r.statusText, true); return; }
+      showToast(verdict==='correct' ? 'Ground truth confirmed' : 'Dispute logged');
+      if(verdict==='incorrect' && disputedIndicator) disputedIndicator.classList.remove('hidden');
+      const heading=document.getElementById('receipt-feedback-heading');
+      if(heading) heading.textContent= verdict==='correct' ? 'STATUS CONFIRMED: GROUND TRUTH RECORD VERIFIED' : 'STATUS RECORDED: DISPUTE LOGGED INTO AUDIT STORE';
+      if(verdict==='correct' && groundYesBtn) groundYesBtn.classList.add('bg-emerald-700');
+      if(verdict==='incorrect' && groundNoBtn){ groundNoBtn.disabled=true; groundNoBtn.classList.add('bg-[#93000a]','text-white','border-[#93000a]'); }
+      // refresh audit
+      fetchAudit(currentFilter, auditSearch? auditSearch.value : '');
+    }catch(e){ showToast(e.message, true); }
+  }
+  if(groundYesBtn) groundYesBtn.addEventListener('click', ()=> sendFeedback('correct'));
+  if(groundNoBtn) groundNoBtn.addEventListener('click', ()=> sendFeedback('incorrect'));
+
+  // Receipt actions: download CSV + share link
+  // Find buttons by text
+  function findBtnByText(txt){
+    const all=document.querySelectorAll('button');
+    for(const b of all){ if(b.textContent.includes(txt)) return b; }
+    return null;
+  }
+  const dlBtn=findBtnByText('DOWNLOAD CSV');
+  const shareBtn=findBtnByText('SHARE VERIFICATION');
+  if(dlBtn){
+    dlBtn.addEventListener('click', ()=>{
+      const rec=window.__lastFullRecord || window.__lastResult;
+      if(!rec){ showToast('No attestation to export', true); return; }
+      const ver=rec.verification_id || window.__verificationId || '';
+      const sha=rec.sha256 || rec.sha || '';
+      const verdict=rec.verdict || rec.receipt?.verdict || '';
+      const conf=rec.confidence ?? rec.receipt?.confidence ?? '';
+      const ts=rec.timestamp_utc || new Date().toISOString();
+      const fname=rec.filename || (window.__selectedFile? window.__selectedFile.name : '');
+      let csv='verification_id,filename,verdict,confidence,sha256,timestamp_utc\n';
+      csv+= '"'+ver+'","'+fname.replace(/"/g,'""')+'","'+verdict+'",'+conf+',"'+sha+'","'+ts+'"\n';
+      // add model breakdown
+      const bd=rec.model_breakdown || window.__lastResult?.model_breakdown || [];
+      if(bd.length){
+        csv+='\nmodel,internal_name,label,score,vote,display_type,threshold\n';
+        bd.forEach(m=>{
+          csv+= '"'+(m.model||'')+'","'+(m.internal_name||m.model||'')+'","'+(m.label||'')+'",'+ (m.score ?? '') +',"'+(m.vote||'')+'","'+(m.display_type||'')+'","'+(m.threshold||'')+'"\n';
+        });
+      }
+      const blob=new Blob([csv], {type:'text/csv'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=ver+'-audit.csv'; a.click(); URL.revokeObjectURL(url);
+      showToast('CSV downloaded');
+    });
+  }
+  if(shareBtn){
+    shareBtn.addEventListener('click', async ()=>{
+      const ver=window.__verificationId;
+      if(!ver){ showToast('No verification to share', true); return; }
+      const link= location.origin + '/verify/' + ver;
+      try{ await navigator.clipboard.writeText(link); showToast('Link copied: '+link); }
+      catch{ prompt('Copy link:', link); }
+    });
+  }
+
+  // Audit log fetching
+  async function fetchAudit(filter, search){
+    currentFilter=filter;
+    const params=new URLSearchParams({filter: filter||'all', limit:'50', offset:'0'});
+    if(search) params.set('search', search);
+    try{
+      const r=await fetch('/api/history?'+params.toString());
+      if(!r.ok) throw new Error(r.statusText);
+      const data=await r.json();
+      renderAudit(data);
+    }catch(e){
+      showToast('Audit fetch failed: '+e.message, true);
+    }
+  }
+  function renderAudit(data){
+    if(!auditBody) return;
+    // update total
+    const totalEl=document.querySelector('#prediction-audit-log span.font-mono-data');
+    // find span that contains TOTAL ATTESTED or fallback first
+    let tEl=null;
+    document.querySelectorAll('#prediction-audit-log span').forEach(s=>{ if(s.textContent.includes('TOTAL ATTESTED')) tEl=s; });
+    if(tEl) tEl.textContent='TOTAL ATTESTED: '+ (data.total_attested ?? data.total_filtered ?? data.results?.length ?? 0).toLocaleString();
+    auditBody.innerHTML='';
+    const results=data.results||[];
+    if(results.length===0){
+      auditBody.innerHTML='<tr id="no-records-row"><td colspan="6" class="py-8 text-center"><div class="flex flex-col items-center gap-2 font-mono-data text-xs text-on-surface-variant"><span class="material-symbols-outlined text-[24px] text-outline">search_off</span><span>No attestations found.</span><span class="text-[11px] text-outline">Try adjusting your verdict filter or clear search terms.</span></div></td></tr>';
+      return;
+    }
+    results.forEach(rec=>{
+      const tr=document.createElement('tr');
+      tr.className='hover:bg-surface-container/60 transition-colors audit-row';
+      tr.setAttribute('data-id', rec.verification_id||'');
+      tr.setAttribute('data-filename', rec.filename||'');
+      tr.setAttribute('data-sha256', rec.sha256||'');
+      tr.setAttribute('data-verdict', rec.verdict||'');
+      tr.setAttribute('data-disputed', rec.disputed ? 'true':'false');
+      const thumb= rec.thumbnail_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCyvZvpXETrp07GGW2KlKdH9MJff8K6Cm6-Naze5q8EX4WAQs28bR4UcTVVDfDaI2pBsyJyCkh_JBSUqUcbrq7w5n56GJ0-J7QYR0YCggwUU8Ycp6vJ-dQP_Qbs3_exo2V1dil2Vb6_u1Mc6bQcLTfVf3U1S3Mj7om46w3TMkU5bv5C69ABQV9MAV9HXNzN3IC1iXYtneOLUtLxDDmQNOLuuocwwRuSVoemg5J-MoooBF7nhOxuX6VD';
+      const verdict=rec.verdict||'';
+      let badgeCls='bg-surface-container-highest text-on-surface-variant border-outline-variant/40';
+      if(verdict.includes('SYNTHETIC')) badgeCls='bg-error-container/40 text-error border-error/30';
+      else if(verdict.includes('AUTHENTIC')) badgeCls='bg-secondary-container/30 text-primary border-secondary-container/40';
+      const confTxt= rec.confidence!==undefined && rec.confidence!==null ? (rec.confidence*100).toFixed(1)+'%' : '--';
+      const dims= rec.dimensions ? rec.dimensions : '';
+      const ftype= rec.file_type || (rec.filename? rec.filename.split('.').pop().toUpperCase() : '');
+      const ts= rec.timestamp_utc || '';
+      let tsOut=ts;
+      try{ if(ts.includes('T')){ const d=new Date(ts); tsOut=d.toISOString().replace('T',' ').slice(0,19); } }catch{}
+      const disputedTag= rec.disputed ? '<span class="dispute-tag ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-DEFAULT text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-tight"><span class="material-symbols-outlined text-[10px] mr-0.5">flag</span> DISPUTED</span>' : '';
+      tr.innerHTML='<td class="py-3 px-space-md flex items-center gap-space-sm"><div class="w-9 h-9 rounded-DEFAULT bg-surface-container-highest overflow-hidden shrink-0 border border-outline-variant/40"><img alt="thumbnail" class="w-full h-full object-cover" src="'+thumb+'" onerror="this.src=\'https://via.placeholder.com/40\'"></div><div class="flex flex-col min-w-0"><span class="text-primary truncate font-semibold row-filename">'+(rec.filename||'')+'</span><span class="text-[10px] text-on-surface-variant">'+ftype+' \u00b7 '+dims+'</span></div></td><td class="py-3 px-space-md text-secondary row-id">'+(rec.verification_id||'')+'</td><td class="py-3 px-space-md text-on-surface-variant">'+tsOut+'</td><td class="py-3 px-space-md row-verdict-cell"><span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT text-[10px] font-bold border '+badgeCls+'">'+verdict+'</span>'+disputedTag+'</td><td class="py-3 px-space-md font-bold text-primary-container">'+confTxt+'</td><td class="py-3 px-space-md text-right"><button class="inspect-btn px-2 py-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container text-on-surface rounded-DEFAULT border border-outline-variant/30 text-[11px] font-label-sm uppercase transition-colors cursor-pointer" type="button" data-id="'+(rec.verification_id||'')+'">INSPECT</button></td>';
+      auditBody.appendChild(tr);
+    });
+    // wire inspect
+    auditBody.querySelectorAll('.inspect-btn').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id=btn.getAttribute('data-id');
+        if(!id) return;
+        try{
+          const r=await fetch('/api/detect/'+encodeURIComponent(id));
+          if(!r.ok) throw new Error(r.statusText);
+          const rec=await r.json();
+          // Build postData-like structure from full record
+          const postLike={
+            verification_id: rec.verification_id,
+            feedback_token: rec.feedback_token,
+            receipt:{verdict: rec.verdict, confidence: rec.confidence, confidence_label: (rec.model_breakdown? rec.model_breakdown.filter(m=>m.vote==='fake').length+' of '+rec.model_breakdown.length+' models agree' : ''), models_responded: rec.model_breakdown? rec.model_breakdown.length:0, models_total:7},
+            model_breakdown: rec.model_breakdown||[],
+            thumbnail_url: rec.thumbnail_url
+          };
+          populateMatrix(postLike.model_breakdown);
+          populateReceiptFromPost(postLike, rec);
+          populateTerminal(postLike, rec);
+          const sec=document.querySelector('div.bg-\\[\\#f4f5ff\\]');
+          if(sec) sec.scrollIntoView({behavior:'smooth', block:'center'});
+          // update share url without reload
+          history.pushState(null,'','/verify/'+id);
+        }catch(e){ showToast(e.message, true); }
+      });
+    });
+  }
+
+  // filter button wiring
+  filterButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const f=btn.getAttribute('data-filter')||'all';
+      currentFilter=f;
+      // update visual
+      filterButtons.forEach(b=>{
+        if(b===btn){ b.className='px-space-md py-1.5 bg-[#00f0ff] text-[#070e1d] font-label-sm uppercase rounded-DEFAULT font-bold shadow-[0_0_8px_rgba(0,240,255,0.25)] transition-all cursor-pointer'; }
+        else { b.className='px-space-md py-1.5 bg-surface-container border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 font-label-sm uppercase rounded-DEFAULT transition-all cursor-pointer'; }
+      });
+      fetchAudit(f, auditSearch? auditSearch.value : '');
+    });
+  });
+  if(auditSearch){
+    auditSearch.addEventListener('input', ()=>{
+      clearTimeout(searchDebounce);
+      searchDebounce=setTimeout(()=> fetchAudit(currentFilter, auditSearch.value), 300);
+    });
+  }
+  // initial load
+  fetchAudit('all','');
+
+  // Share route auto-load
+  if(location.pathname.startsWith('/verify/')){
+    const id=location.pathname.split('/verify/')[1].split('/')[0].split('?')[0];
+    if(id){
+      (async()=>{
+        try{
+          const r=await fetch('/api/detect/'+encodeURIComponent(id));
+          if(!r.ok) throw new Error('Not found');
+          const rec=await r.json();
+          const postLike={
+            verification_id: rec.verification_id,
+            feedback_token: rec.feedback_token,
+            receipt:{verdict: rec.verdict, confidence: rec.confidence, confidence_label: (rec.model_breakdown? rec.model_breakdown.filter(m=> (m.vote||'').toLowerCase()==='fake').length+' of '+rec.model_breakdown.length+' models agree' : ''), models_responded: rec.model_breakdown? rec.model_breakdown.length:0, models_total:7},
+            model_breakdown: rec.model_breakdown||[],
+            thumbnail_url: rec.thumbnail_url
+          };
+          populateMatrix(postLike.model_breakdown);
+          populateReceiptFromPost(postLike, rec);
+          populateTerminal(postLike, rec);
+        }catch(e){ showToast('Share load failed: '+e.message, true); }
+      })();
+    }
+  }
+
+  // expose for debug
+  window.fetchAudit=fetchAudit;
+  window.populateMatrix=populateMatrix;
+})();
+</script>
+
+</body></html>

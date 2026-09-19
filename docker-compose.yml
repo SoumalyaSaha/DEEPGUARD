@@ -22,10 +22,12 @@ services:
       - "8000:8000"
     environment:
       - NPR_URL=http://npr:5001/detect
+      - UFD_URL=http://ufd:5004/detect
       - RAWNET_URL=http://rawnet:5002/detect
       - CROSSVIT_URL=http://crossvit:7001/detect
     depends_on:
       - npr
+      - ufd
       - rawnet
       - crossvit
 
@@ -43,6 +45,19 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 5001
 
   
+  # ── UFD Image Model ───────────────────────────────────────────────────────────
+  ufd:
+    build:
+      context: .
+      dockerfile: Dockerfile.model
+      args:
+        MODEL_DIR: models/ufd
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./weights:/app/weights:ro
+    command: uvicorn main:app --host 0.0.0.0 --port 5004
+
   # ── RawNet2 Audio Model ────────────────────────────────────────────────────────
   rawnet:
     build:

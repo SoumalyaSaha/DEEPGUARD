@@ -1,9 +1,8 @@
 """
-NPR -- Noise Pattern Recognition image deepfake detector
-CNNDetection ResNet-50 weights.
-NOTE: CNNDetection outputs high score for REAL images (trained with label 0=fake, 1=real)
-So we INVERT the output: fake_probability = 1 - model_output
-Weight file: weights/npr.pth
+NPR -- Noise Pattern Recognition image deepfake detector (CNNDetection ResNet-50).
+Upstream CNNDetection convention (PeterWang512/CNNDetection): the model's sigmoid
+output IS the probability of being synthetic/fake ("probability of being synthetic").
+No inversion. Weight file: weights/npr.pth
 """
 import io, time, logging, os
 import torch
@@ -23,10 +22,11 @@ WEIGHTS_PATH = os.getenv("WEIGHTS_PATH", "../../weights/npr.pth")
 
 
 class NPRModel(nn.Module):
-    def __init__(self):
+    def __init__(self, base=None):
         super().__init__()
-        base = resnet50(weights=None)
-        base.fc = nn.Linear(2048, 1)
+        if base is None:
+            base = resnet50(weights=None)
+            base.fc = nn.Linear(2048, 1)
         self.net = base
 
     def forward(self, x):
@@ -34,8 +34,8 @@ class NPRModel(nn.Module):
 
 
 model = None
+# Upstream CNNDetection demo.py pipeline: CenterCrop(224) (no Resize) + ToTensor + ImageNet norm.
 TRANSFORM = T.Compose([
-    T.Resize(256),
     T.CenterCrop(224),
     T.ToTensor(),
     T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
@@ -45,16 +45,24 @@ TRANSFORM = T.Compose([
 @app.on_event("startup")
 async def load_model():
     global model
-    model = NPRModel().to(DEVICE)
+    # Load the checkpoint directly into the bare ResNet50 (checkpoint keys have no
+    # "net." prefix) so strict=True verifies every key actually matched.
+    base = resnet50(weights=None)
+    base.fc = nn.Linear(2048, 1)
     if os.path.exists(WEIGHTS_PATH):
         logger.info(f"Loading NPR weights from {WEIGHTS_PATH}")
         ckpt = torch.load(WEIGHTS_PATH, map_location=DEVICE)
         state = ckpt.get("model", ckpt.get("state_dict", ckpt))
         state = {k.replace("module.", ""): v for k, v in state.items()}
-        model.load_state_dict(state, strict=False)
-        logger.info("NPR weights loaded OK")
+        missing, unexpected = base.load_state_dict(state, strict=True)
+        matched = len(state) - len(missing) - len(unexpected)
+        logger.info(
+            f"NPR checkpoint loaded: {matched}/{len(state)} keys matched "
+            f"(missing={len(missing)}, unexpected={len(unexpected)})"
+        )
     else:
         logger.warning(f"No weights at {WEIGHTS_PATH}")
+    model = NPRModel(base=base).to(DEVICE)
     model.eval()
     logger.info(f"NPR ready on {DEVICE}")
 
@@ -77,9 +85,9 @@ async def detect(file: UploadFile = File(...)):
         tensor = TRANSFORM(img).unsqueeze(0).to(DEVICE)
         with torch.no_grad():
             raw = model(tensor).item()
-        # CNNDetection: high score = real, low score = fake
-        # Invert so that fake_probability is high for fake images
-        fake_prob = 1.0 - raw
+        # Upstream CNNDetection: sigmoid output IS P(fake) ("probability of being synthetic"),
+        # so no inversion -- fake_prob = raw.
+        fake_prob = raw
         return {
             "model": "NPR",
             "fake_probability": round(fake_prob, 4),

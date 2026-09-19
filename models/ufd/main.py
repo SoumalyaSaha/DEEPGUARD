@@ -26,6 +26,9 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 WEIGHTS_PATH = os.getenv("WEIGHTS_PATH", "../../weights/ufd.pth")
 
+# Redirect torch hub cache to D: (C: is nearly full).
+os.environ.setdefault("TORCH_HOME", r"D:\temp\torch_cache")
+
 clip_model = None
 preprocess = None
 classifier = None
@@ -52,7 +55,8 @@ async def load_model():
     # ── Load CLIP backbone ───────────────────────────────────────────────────────
     try:
         import clip  # openai-clip package
-        clip_model, preprocess = clip.load("ViT-L/14", device=DEVICE)
+        clip_model, preprocess = clip.load("ViT-L/14", device=DEVICE,
+                                            download_root=r"D:\temp\clip_cache")
         clip_model.eval()
         logger.info("CLIP ViT-L/14 backbone loaded ✓")
     except ImportError:

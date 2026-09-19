@@ -6,11 +6,16 @@ httpx==0.27.0
 pydantic==2.7.1
 
 # ── ML / Vision ─────────────────────────────────────────────────────────────────
-torch==2.3.0
-torchvision==0.18.0
+# NOTE: torch/torchvision come from the CUDA wheel index, NOT PyPI —
+# the "+cu121" local-version builds do not exist on PyPI. Install with:
+#   pip install -r requirements.txt  (honours the --index-url line below)
+--index-url https://download.pytorch.org/whl/cu121
+torch==2.3.0+cu121
+torchvision==0.18.0+cu121
 Pillow==10.3.0
 numpy==1.26.4
 opencv-python-headless==4.9.0.80
+safetensors==0.7.0
 
 # ── Audio ───────────────────────────────────────────────────────────────────────
 librosa==0.10.2

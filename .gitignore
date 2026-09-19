@@ -1,14 +1,35 @@
-venv/ 
-weights/ 
-*.pth 
-*.dll 
-logs/ 
-__pycache__/ 
-mnt/ 
-*.pyc 
-write_ufd.py 
-0.5 
-add_dire.py 
-fix_dire.py 
-fix_strategy.py 
-main.py 
+venv/
+node_modules/
+dist/
+__pycache__/
+*.pyc
+
+# Model weights (too large for GitHub)
+weights/
+*.pth
+*.safetensors
+*.pt
+
+# HuggingFace cache (too large)
+hf_cache/
+
+# Torch cache
+torch_cache/
+clip_cache/
+
+# Logs
+logs/
+
+# Test data
+test_data/
+dataset/
+
+# Thumbnails (generated at runtime)
+thumbnails/
+
+# Results (generated outputs)
+results/
+
+# Temp files
+tmp_*.json
+*.dll

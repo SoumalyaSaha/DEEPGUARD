@@ -9,19 +9,43 @@ What this downloads
 ───────────────────
   weights/npr.pth       CNNDetection ResNet-50 (trained on ProGAN, generalises broadly)
                         Source: github.com/peterwang512/CNNDetection
-                        ~100 MB
+                        ~100 MB (scripted: GitHub release)
 
   weights/ufd.pth       UniversalFakeDetect linear classifier head (CLIP ViT-L/14)
                         Source: github.com/WisconsinAIVision/UniversalFakeDetect
-                        ~4 KB  (CLIP backbone auto-downloaded by openai-clip)
+                        ~4 KB  (scripted: GitHub release; CLIP backbone auto-downloaded by openai-clip)
+
+  weights/ViT-L-14.pt   OpenAI CLIP ViT-L/14 backbone (needed by IAPL; UFD uses openai-clip's copy)
+                        Source: OpenAI public CDN (openaipublic.azureedge.net)
+                        ~933 MB (scripted: direct URL)
+
+  weights/nonescape-v0.safetensors
+                        Nonescape full detector (DINOv2-large + EfficientNetV2-L)
+                        Source: nonescape.sfo2.cdn.digitaloceanspaces.com
+                        ~2.4 GB (scripted: direct URL)
 
   weights/rawnet2.pth   RawNet2 anti-spoofing (ASVspoof 2021 LA track)
                         Source: asvspoof.org / Zenodo
-                        ~60 MB
+                        MANUAL ONLY — the previously listed Zenodo URL was verified
+                        to return an HTML error page, not weights. Do not trust
+                        automated downloads for this file; see alt instructions.
 
   weights/crossvit.pth  CrossEfficientViT (FaceForensics++ trained)
                         Source: github.com/davide-coccomini/...
-                        ~20 MB
+                        ~20 MB (scripted entry kept as-is; service unevaluated)
+
+  HF cache (auto-warmed, no weights/ file needed):
+                        Organika/sdxl-detector, umm-maybe/AI-image-detector,
+                        aaronkantrowitz/ai-image-detection (CapCheck) —
+                        fetched via huggingface_hub into the HF cache
+                        (respects HF_HOME/HF_HUB_CACHE). CapCheck's external
+                        cache is therefore part of this scripted flow, not a
+                        separate manual step.
+
+  MANUAL (no scriptable source — see README §4):
+  weights/iapl_sd14.pth IAPL SDv1.4 checkpoint (~1.7 GB)
+                        Source: https://modelscope.cn/models/yihengli/IAPL_pretrain
+                        (ModelScope page is JS-gated; no verified direct URL)
 """
 
 import os
@@ -29,6 +53,12 @@ import sys
 import hashlib
 import urllib.request
 from pathlib import Path
+
+# Windows consoles default to cp1252, which cannot print the ✓/✗/○
+# status glyphs used below — force UTF-8 so a fresh judge machine
+# doesn't crash on output encoding.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 WEIGHTS_DIR = Path("weights")
 WEIGHTS_DIR.mkdir(exist_ok=True)
@@ -70,17 +100,63 @@ REGISTRY = [
         ),
     },
     {
-        "name": "RawNet2 (ASVspoof 2021)",
-        "file": "rawnet2.pth",
-        # Zenodo deposit from ASVspoof organisers
-        "url": "https://zenodo.org/record/6456915/files/RawNet2_best_model.pth",
+        "name": "IAPL backbone (OpenAI CLIP ViT-L/14)",
+        "file": "ViT-L-14.pt",
+        # Public OpenAI CDN copy of the ViT-L/14 checkpoint
+        "url": "https://openaipublic.azureedge.net/clip/models/b8cca3fd41ae0c99b0e39f330335080d/ViT-L-14.pt",
         "sha256": None,
         "alt": (
             "Manual download:\n"
-            "  1. Visit https://zenodo.org/record/6456915\n"
-            "  2. Download RawNet2_best_model.pth\n"
-            "  3. Save as weights/rawnet2.pth\n"
-            "  Alternatively: https://github.com/asvspoof-challenge/2021 → model zoo"
+            "  1. Fetch https://openaipublic.azureedge.net/clip/models/"
+            "b8cca3fd41ae0c99b0e39f330335080d/ViT-L-14.pt\n"
+            "  2. Save as weights/ViT-L-14.pt (933 MB)"
+        ),
+    },
+    {
+        "name": "Nonescape full detector",
+        "file": "nonescape-v0.safetensors",
+        "url": "https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-v0.safetensors",
+        "sha256": None,
+        "alt": (
+            "Manual download:\n"
+            "  1. Fetch https://nonescape.sfo2.cdn.digitaloceanspaces.com/"
+            "nonescape-v0.safetensors\n"
+            "  2. Save as weights/nonescape-v0.safetensors (2.4 GB)"
+        ),
+    },
+    {
+        "name": "IAPL SDv1.4 checkpoint (~1.7 GB)",
+        "file": "iapl_sd14.pth",
+        # No verified scripted source: the ModelScope page
+        # (https://modelscope.cn/models/yihengli/IAPL_pretrain) is JS-gated
+        # with no stable direct file URL. Manual placement required.
+        "url": None,
+        "sha256": None,
+        "alt": (
+            "Manual download REQUIRED (no scriptable source):\n"
+            "  1. Visit https://modelscope.cn/models/yihengli/IAPL_pretrain\n"
+            "  2. Download the SDv1.4 checkpoint\n"
+            "     (file used here: checkpoint_best_acc_sd14.pth, ~1.7 GB)\n"
+            "  3. Save as weights/iapl_sd14.pth\n"
+            "  See README §4 for details."
+        ),
+    },
+    {
+        "name": "RawNet2 (ASVspoof 2021)",
+        "file": "rawnet2.pth",
+        # VERIFIED BAD: the Zenodo URL below was proven to return an HTML
+        # error page instead of weights (see weights/ history). Kept as
+        # manual-only so this script never re-downloads the garbage file.
+        "url": None,
+        "sha256": None,
+        "alt": (
+            "Manual download REQUIRED (no working scripted source):\n"
+            "  1. Obtain a genuine RawNet2_best_model.pth "
+            "(ASVspoof 2021 LA track; try the challenge model zoo:\n"
+            "     https://github.com/asvspoof-challenge/2021)\n"
+            "  2. Save as weights/rawnet2.pth\n"
+            "  Do NOT use https://zenodo.org/record/6456915/files/"
+            "RawNet2_best_model.pth — verified to serve HTML, not weights."
         ),
     },
     {
@@ -137,6 +213,11 @@ def download(entry: dict) -> bool:
         print(f"  ✓ {dest} already exists — skipping")
         return True
 
+    if not entry.get("url"):
+        print(f"\n  ○ {entry['name']}: no scripted source — manual step:")
+        print(f"\n  {entry['alt']}\n")
+        return False
+
     print(f"\nDownloading {entry['name']} …")
     print(f"  URL: {entry['url']}")
 
@@ -165,6 +246,45 @@ def download(entry: dict) -> bool:
 
 
 # ── Extras ───────────────────────────────────────────────────────────────────────
+
+HF_REPOS = [
+    # (repo_id, friendly_name) — auto-fetched into the HF cache at startup
+    # by each service; pre-warmed here so a cold launch never waits on them.
+    ("Organika/sdxl-detector", "SDXL-detector"),
+    ("umm-maybe/AI-image-detector", "umm-maybe"),
+    ("aaronkantrowitz/ai-image-detection", "CapCheck"),
+]
+
+
+def warm_hf_cache() -> bool:
+    """Pre-download HF-hosted models into the local HF cache.
+
+    This folds CapCheck's external cache (and SDXL/umm-maybe) into the
+    scripted flow: on a fresh machine the files land wherever HF_HOME /
+    HF_HUB_CACHE point instead of surprising the first service launch.
+    """
+    try:
+        from huggingface_hub import snapshot_download
+        from huggingface_hub.constants import HF_HUB_CACHE
+    except ImportError:
+        print("\n  ○ huggingface_hub not installed — skipping HF cache warm "
+              "(services will fetch on first launch instead).")
+        print("    Install it with: pip install huggingface_hub")
+        return False
+    print(f"  HF cache location: {HF_HUB_CACHE}")
+    if str(HF_HUB_CACHE).startswith("C:"):
+        print("  ⚠ WARNING: cache points at C: — set HF_HOME to a D: path "
+              "before running (see install_and_run.bat).")
+    ok = True
+    for repo_id, friendly in HF_REPOS:
+        try:
+            path = snapshot_download(repo_id=repo_id)
+            print(f"  ✓ {friendly} cached at {path}")
+        except Exception as e:
+            print(f"  ✗ {friendly} ({repo_id}) failed: {e}")
+            ok = False
+    return ok
+
 
 def install_clip():
     """Install openai-clip if not present (needed for UFD)."""
@@ -195,6 +315,9 @@ def main():
 
     install_clip()
 
+    print("\nWarming Hugging Face model cache (SDXL / umm-maybe / CapCheck)…")
+    hf_ok = warm_hf_cache()
+
     print("\n" + "=" * 60)
     print("  Summary")
     print("=" * 60)
@@ -204,6 +327,8 @@ def main():
         print(f"  {status}  weights/{fname}")
         if not ok:
             all_ok = False
+    print(f"  {'✓' if hf_ok else '○'}  HF cache (SDXL / umm-maybe / CapCheck)")
+    all_ok = all_ok and hf_ok
 
     if all_ok:
         print("\n  All weights ready! Run ./start.sh or docker compose up --build")

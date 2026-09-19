@@ -1,47 +1,51 @@
-"""
-FastAPI Gateway — :8000
-Routes media to the correct model microservices,
-then aggregates results through the meta-learner.
-
-IMAGE DETECTION LOGIC (v4 - Clean & Reliable):
-  Stage 1 → DIRE checks the image (fast local model)
-            DIRE < 0.3  → REAL, stop here (confident real, no API call needed)
-            DIRE >= 0.3 → suspicious → go to Stage 2
-
-  Stage 2 → AI-or-Not API (reliable, handles compressed/webp/rotated images)
-            AI-or-Not >= 0.75 → FAKE
-            AI-or-Not < 0.75  → REAL
-            (if AI-or-Not fails → fallback to NPR)
-
-  Fallback → NPR only used if AI-or-Not API fails/unavailable
+﻿"""
+FastAPI Gateway v8 — :8000
+7-model majority-vote deepfake detection + persistent audit log + thumbnails.
 """
 
 import asyncio
+import hashlib
 import httpx
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from PIL import Image
+from pydantic import BaseModel
 from typing import Optional
+import io
+import json
 import logging
 import os
+import random
+import string
+import time
+import uuid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("gateway")
 
-app = FastAPI(title="Deepfake Detection Gateway", version="4.0.0")
+app = FastAPI(title="Deepfake Detection Gateway", version="8.0.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOGS_DIR = os.path.normpath(os.path.join(BASE_DIR, "..", "logs"))
+THUMBS_DIR = os.path.normpath(os.path.join(BASE_DIR, "..", "thumbnails"))
+DETECTIONS_LOG = os.path.join(LOGS_DIR, "detections_log.jsonl")
+FEEDBACK_LOG = os.path.join(LOGS_DIR, "feedback_log.jsonl")
+os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(THUMBS_DIR, exist_ok=True)
+app.mount("/thumbnails", StaticFiles(directory=THUMBS_DIR), name="thumbnails")
 
-# ── Service registry ─────────────────────────────────────────────────────────────
 MODEL_SERVICES = {
     "image": [
-        {"id": "dire", "url": os.getenv("DIRE_URL", "http://localhost:5003/detect"), "name": "DIRE"},
-        {"id": "npr",  "url": os.getenv("NPR_URL",  "http://localhost:5001/detect"), "name": "NPR"},
+        {"id": "npr", "url": os.getenv("NPR_URL", "http://localhost:5001/detect"), "name": "NPR"},
+        {"id": "ufd", "url": os.getenv("UFD_URL", "http://localhost:5004/detect"), "name": "UFD"},
+        {"id": "iapl", "url": os.getenv("IAPL_URL", "http://localhost:5005/detect"), "name": "IAPL"},
+        {"id": "sdxl", "url": os.getenv("SDXL_URL", "http://localhost:5009/detect"), "name": "SDXL"},
+        {"id": "umm", "url": os.getenv("UMM_URL", "http://localhost:5010/detect"), "name": "UMM"},
+        {"id": "capcheck", "url": os.getenv("CAP_URL", "http://localhost:5011/detect"), "name": "CapCheck"},
+        {"id": "nonescape", "url": os.getenv("NONE_URL", "http://localhost:5013/detect"), "name": "Nonescape"},
     ],
     "audio": [
         {"id": "rawnet", "url": os.getenv("RAWNET_URL", "http://localhost:5002/detect"), "name": "RawNet2"},
@@ -51,216 +55,225 @@ MODEL_SERVICES = {
     ],
 }
 
-# ── AI-or-Not API ────────────────────────────────────────────────────────────────
-AIORNOT_API_KEY = os.getenv("AIORNOT_API_KEY", "")
-AIORNOT_URL     = "https://api.aiornot.com/v2/image/sync"
+MODEL_DISPLAY = {
+    "npr": ("NPR", "Noise Pattern Recognition"),
+    "ufd": ("UFD", "Universal Fake Detection"),
+    "iapl": ("IAPL", "Inception Anomaly Detection"),
+    "sdxl": ("SDXL_DETECTOR", "Diffusion Artifact Detection"),
+    "umm": ("DIFFUSION_RECON", "Error Variance Inversion"),
+    "capcheck": ("CAPCHECK", "Caption Artifact Detection"),
+    "nonescape": ("NONESCAPE", "Spectral Residual Analysis"),
+}
 
-# ── Thresholds ───────────────────────────────────────────────────────────────────
-DIRE_SUSPICION_THRESHOLD = 0.3   # DIRE >= this → suspicious → call AI-or-Not
-AIORNOT_FAKE_THRESHOLD   = 0.75  # AI-or-Not >= this → FAKE
-NPR_FALLBACK_THRESHOLD   = 0.90  # NPR fallback (only if AI-or-Not fails): needs very high confidence
-
+MODEL_WEIGHTS = {"npr": 1.00, "ufd": 1.00, "iapl": 0.844}
 TIMEOUT = httpx.Timeout(60.0)
+_ALPHANUM = string.ascii_uppercase + string.digits
+VOTE_THRESHOLD = 0.5
 
 
-# ── Helper: call a local model ───────────────────────────────────────────────────
-async def call_model(client: httpx.AsyncClient, service: dict, file_bytes: bytes, filename: str) -> dict:
+def _gen_verification_id():
+    return "VA-" + "".join(random.choices(_ALPHANUM, k=4)) + "-" + "".join(random.choices(_ALPHANUM, k=4))
+
+
+# -- Audit log helpers --
+
+def _write_detection(record):
+    with open(DETECTIONS_LOG, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, default=str) + "\n")
+
+
+def _load_all_detections():
+    records = []
+    if not os.path.exists(DETECTIONS_LOG):
+        return records
+    with open(DETECTIONS_LOG, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    records.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+    records.sort(key=lambda r: r.get("timestamp_utc", ""), reverse=True)
+    return records
+
+
+def _load_detection_by_id(verification_id):
+    if not os.path.exists(DETECTIONS_LOG):
+        return None
+    with open(DETECTIONS_LOG, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+                if rec.get("verification_id") == verification_id:
+                    return rec
+            except json.JSONDecodeError:
+                continue
+    return None
+
+
+def _update_detection_flag(feedback_token, field, value):
+    if not os.path.exists(DETECTIONS_LOG):
+        return False
+    lines = []
+    updated = False
+    with open(DETECTIONS_LOG, "r", encoding="utf-8") as f:
+        for line in f:
+            lines.append(line)
+            if updated:
+                continue
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                rec = json.loads(stripped)
+                if rec.get("feedback_token") == feedback_token:
+                    rec[field] = value
+                    lines[-1] = json.dumps(rec, default=str) + "\n"
+                    updated = True
+            except json.JSONDecodeError:
+                continue
+    if updated:
+        with open(DETECTIONS_LOG, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+    return updated
+
+
+def _save_thumbnail(file_bytes, verification_id):
+    try:
+        img = Image.open(io.BytesIO(file_bytes))
+        img.thumbnail((120, 120), Image.LANCZOS)
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+        thumb_name = verification_id.lower() + ".jpg"
+        thumb_path = os.path.join(THUMBS_DIR, thumb_name)
+        img.save(thumb_path, "JPEG", quality=85)
+        return "/thumbnails/" + thumb_name
+    except Exception as e:
+        logger.warning("Thumbnail save failed: %s", e)
+        return None
+
+
+def _file_ext(filename):
+    ext = os.path.splitext(filename or "")[1].upper().lstrip(".")
+    return ext if ext in ("PNG", "JPEG", "JPG", "WEBP", "TIFF", "BMP") else "UNKNOWN"
+
+
+def _enrich_breakdown(raw_results):
+    enriched = []
+    for r in raw_results:
+        model_id = r.get("model_id", "")
+        display_key, label = MODEL_DISPLAY.get(model_id, (r["model"], r["model"]))
+        entry = {
+            "model": display_key,
+            "internal_name": r["model"],
+            "label": label,
+            "score": round(r["fake_prob"], 4) if r["verdict"] != "error" else None,
+            "vote": "fake" if r.get("fake_prob", 0) > 0.5 and r["verdict"] != "error" else ("real" if r["verdict"] != "error" else "error"),
+            "display_type": "variance" if model_id == "nonescape" else "probability",
+        }
+        if model_id == "nonescape" and r["verdict"] != "error":
+            entry["threshold"] = 0.5
+        enriched.append(entry)
+    return enriched
+
+
+# -- In-memory feedback cache (1h TTL) --
+
+FEEDBACK_TTL_S = 3600
+_detections_cache = {}
+
+
+def _prune_detections(now=None):
+    now = time.time() if now is None else now
+    expired = [t for t, v in _detections_cache.items() if now - v["timestamp"] > FEEDBACK_TTL_S]
+    for t in expired:
+        del _detections_cache[t]
+
+
+class FeedbackIn(BaseModel):
+    feedback_token: str
+    user_verdict: str
+
+
+# -- Helpers --
+
+async def call_model(client, service, file_bytes, filename):
     try:
         files = {"file": (filename, file_bytes, "application/octet-stream")}
-        resp  = await client.post(service["url"], files=files, timeout=TIMEOUT)
+        resp = await client.post(service["url"], files=files, timeout=TIMEOUT)
         resp.raise_for_status()
-        data  = resp.json()
+        data = resp.json()
         return {
-            "model":      service["name"],
-            "model_id":   service["id"],
-            "fake_prob":  float(data.get("fake_probability", data.get("fake_prob", 0.5))),
-            "verdict":    data.get("verdict", "unknown"),
+            "model": service["name"],
+            "model_id": service["id"],
+            "fake_prob": float(data.get("fake_probability", data.get("fake_prob", 0.5))),
+            "verdict": data.get("verdict", "unknown"),
             "latency_ms": data.get("latency_ms", None),
-            "error":      None,
+            "error": None,
         }
     except Exception as e:
-        logger.warning(f"Model {service['name']} failed: {e}")
+        logger.warning("Model %s failed: %s", service["name"], e)
         return {
-            "model":      service["name"],
-            "model_id":   service["id"],
-            "fake_prob":  0.5,
-            "verdict":    "error",
+            "model": service["name"],
+            "model_id": service["id"],
+            "fake_prob": 0.5,
+            "verdict": "error",
             "latency_ms": None,
-            "error":      str(e),
+            "error": str(e),
         }
 
 
-# ── Helper: call AI-or-Not API ───────────────────────────────────────────────────
-async def call_aiornot(client: httpx.AsyncClient, file_bytes: bytes) -> dict:
-    if not AIORNOT_API_KEY:
-        return {
-            "model":      "AI-or-Not",
-            "model_id":   "aiornot",
-            "fake_prob":  0.5,
-            "verdict":    "error",
-            "latency_ms": None,
-            "error":      "AIORNOT_API_KEY not set",
-        }
-    try:
-        import time
-        t0      = time.time()
-        headers = {"Authorization": f"Bearer {AIORNOT_API_KEY}"}
-        # Send as multipart file upload (correct format for v2 API)
-        files = {"image": ("image.jpg", file_bytes, "image/jpeg")}
-        params = {"only": ["ai_generated"]}  # only run ai_generated to save credits
-        resp = await client.post(AIORNOT_URL, headers=headers, files=files, params=params, timeout=TIMEOUT)
-        resp.raise_for_status()
-        data        = resp.json()
-        report      = data.get("report", {})
-        ai_generated = report.get("ai_generated", {})
-        # Response: report.ai_generated.verdict = "ai" | "human" | "unknown"
-        #           report.ai_generated.ai.confidence = 0.95
-        verdict_raw = ai_generated.get("verdict", "unknown")
-        ai_score    = float(ai_generated.get("ai", {}).get("confidence", 0.5))
-        verdict     = "fake" if verdict_raw == "ai" else "real"
-        latency     = int((time.time() - t0) * 1000)
-        logger.info(f"AI-or-Not: ai_score={ai_score:.3f} verdict={verdict}")
-        return {
-            "model":      "AI-or-Not",
-            "model_id":   "aiornot",
-            "fake_prob":  round(ai_score, 4),
-            "verdict":    verdict,
-            "latency_ms": latency,
-            "error":      None,
-        }
-    except Exception as e:
-        logger.warning(f"AI-or-Not failed: {e}")
-        return {
-            "model":      "AI-or-Not",
-            "model_id":   "aiornot",
-            "fake_prob":  0.5,
-            "verdict":    "error",
-            "latency_ms": None,
-            "error":      str(e),
-        }
-
-
-# ── Helper: build result dict ────────────────────────────────────────────────────
-def _result(verdict: str, fake_prob: float, path: str, raw_results: list) -> dict:
-    confidence = round(fake_prob if verdict == "fake" else (1 - fake_prob), 4)
+def majority_vote(valid_results):
+    responded = len(valid_results)
+    if responded == 0:
+        raise ValueError("No predictions to combine")
+    votes_fake = sum(1 for r in valid_results if r["fake_prob"] > VOTE_THRESHOLD)
+    votes_real = responded - votes_fake
+    needed = responded // 2 + 1
+    verdict = "fake" if votes_fake >= needed else "real"
+    agree = max(votes_fake, votes_real)
+    breakdown = [
+        {"model": r["model"], "score": round(r["fake_prob"], 4),
+         "vote": "fake" if r["fake_prob"] > VOTE_THRESHOLD else "real"}
+        for r in valid_results
+    ]
     return {
-        "verdict":          verdict,
-        "fake_probability": round(fake_prob, 4),
-        "confidence":       confidence,
-        "detection_path":   path,
-        "raw_results":      raw_results,
+        "verdict": verdict,
+        "confidence_label": "%d of %d models agree" % (agree, responded),
+        "models_responded": responded,
+        "breakdown": breakdown,
     }
 
 
-# ── Main image detection (v4) ────────────────────────────────────────────────────
-async def detect_image_cascaded(file_bytes: bytes, filename: str) -> dict:
-    """
-    Stage 1: DIRE — fast local check
-      → Clear real (< 0.3): return REAL immediately, no API call
-      → Suspicious (>= 0.3): go to Stage 2
-
-    Stage 2: AI-or-Not — reliable cloud API
-      → >= 0.75: FAKE
-      → < 0.75:  REAL
-      → error:   fallback to NPR
-
-    Fallback: NPR — only if AI-or-Not fails
-      → needs >= 0.90 to call FAKE (very strict to avoid false positives)
-      → otherwise REAL
-    """
-    image_services = {s["id"]: s for s in MODEL_SERVICES["image"]}
-    raw_results    = []
-
-    async with httpx.AsyncClient() as client:
-
-        # ── Stage 1: DIRE ────────────────────────────────────────────────────────
-        dire_service = image_services.get("dire")
-        if not dire_service:
-            raise HTTPException(500, "DIRE model not configured")
-
-        dire_result = await call_model(client, dire_service, file_bytes, filename)
-        raw_results.append(dire_result)
-        logger.info(f"DIRE: {dire_result['fake_prob']:.3f}")
-
-        # DIRE errored → skip to AI-or-Not directly
-        if dire_result["verdict"] == "error":
-            logger.warning("DIRE failed, going straight to AI-or-Not")
-            aiornot_result = await call_aiornot(client, file_bytes)
-            raw_results.append(aiornot_result)
-            if aiornot_result["verdict"] == "error":
-                # Last resort: NPR
-                npr_service = image_services.get("npr")
-                if npr_service:
-                    npr_result = await call_model(client, npr_service, file_bytes, filename)
-                    raw_results.append(npr_result)
-                    if npr_result["verdict"] != "error":
-                        verdict = "fake" if npr_result["fake_prob"] >= NPR_FALLBACK_THRESHOLD else "real"
-                        return _result(verdict, npr_result["fake_prob"], "fallback_npr_only", raw_results)
-                raise HTTPException(502, "All detection services failed.")
-            verdict = "fake" if aiornot_result["fake_prob"] >= AIORNOT_FAKE_THRESHOLD else "real"
-            return _result(verdict, aiornot_result["fake_prob"], "fallback_aiornot_dire_error", raw_results)
-
-        # ── DIRE clear → REAL, no API call needed ────────────────────────────────
-        if dire_result["fake_prob"] < DIRE_SUSPICION_THRESHOLD:
-            logger.info(f"DIRE clear ({dire_result['fake_prob']:.3f}), verdict: REAL")
-            return _result("real", dire_result["fake_prob"], "dire_clear_real", raw_results)
-
-        # ── Stage 2: DIRE suspicious → call AI-or-Not ────────────────────────────
-        logger.info(f"DIRE suspicious ({dire_result['fake_prob']:.3f}), calling AI-or-Not...")
-        aiornot_result = await call_aiornot(client, file_bytes)
-        raw_results.append(aiornot_result)
-
-        # AI-or-Not worked → trust it
-        if aiornot_result["verdict"] != "error":
-            if aiornot_result["fake_prob"] >= AIORNOT_FAKE_THRESHOLD:
-                avg = (dire_result["fake_prob"] + aiornot_result["fake_prob"]) / 2
-                return _result("fake", avg, "dire_suspicious_aiornot_confirmed_fake", raw_results)
-            else:
-                avg = (dire_result["fake_prob"] + aiornot_result["fake_prob"]) / 2
-                return _result("real", avg, "dire_suspicious_aiornot_says_real", raw_results)
-
-        # ── Fallback: AI-or-Not failed → use NPR with very strict threshold ──────
-        logger.warning("AI-or-Not failed, falling back to NPR with strict threshold")
-        npr_service = image_services.get("npr")
-        if not npr_service:
-            # No NPR either → be conservative, return REAL
-            return _result("real", dire_result["fake_prob"], "all_failed_default_real", raw_results)
-
-        npr_result = await call_model(client, npr_service, file_bytes, filename)
-        raw_results.append(npr_result)
-
-        if npr_result["verdict"] == "error":
-            return _result("real", dire_result["fake_prob"], "all_failed_default_real", raw_results)
-
-        # NPR fallback: needs 90%+ AND DIRE also suspicious to call FAKE
-        if npr_result["fake_prob"] >= NPR_FALLBACK_THRESHOLD and dire_result["fake_prob"] >= 0.5:
-            avg = (dire_result["fake_prob"] + npr_result["fake_prob"]) / 2
-            return _result("fake", avg, "fallback_dire_and_npr_both_agree_fake", raw_results)
-        else:
-            avg = (dire_result["fake_prob"] + npr_result["fake_prob"]) / 2
-            return _result("real", avg, "fallback_npr_not_confident_enough_real", raw_results)
-
-
-# ── Meta-learner (audio/video) ───────────────────────────────────────────────────
-def meta_learner(predictions: list[dict], strategy: str = "average") -> dict:
+def meta_learner(predictions, strategy="average"):
     if not predictions:
         raise ValueError("No predictions to combine")
     fake_probs = [p["fake_prob"] for p in predictions]
     if strategy == "voting":
         votes_fake = sum(1 for p in predictions if p["verdict"] == "fake")
         final_prob = votes_fake / len(predictions)
+    elif strategy == "weighted":
+        weights = [MODEL_WEIGHTS.get(p.get("model_id", ""), 1.0) for p in predictions]
+        total = sum(weights)
+        final_prob = sum(w * p for w, p in zip(weights, fake_probs)) / total if total > 0 else sum(fake_probs) / len(fake_probs)
     else:
         final_prob = sum(fake_probs) / len(fake_probs)
-    verdict    = "fake" if final_prob >= 0.5 else "real"
+    verdict = "fake" if final_prob >= 0.5 else "real"
     confidence = final_prob if verdict == "fake" else (1 - final_prob)
-    return {
-        "verdict":          verdict,
-        "fake_probability": round(final_prob, 4),
-        "confidence":       round(confidence, 4),
-    }
+    return {"verdict": verdict, "fake_probability": round(final_prob, 4), "confidence": round(confidence, 4)}
 
 
-# ── Routes ───────────────────────────────────────────────────────────────────────
+# -- Routes --
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
@@ -268,44 +281,122 @@ async def health():
 
 @app.post("/api/detect")
 async def detect(
-    file:       UploadFile    = File(...),
-    media_type: str           = Form("image"),
-    models:     Optional[str] = Form(None),
-    strategy:   str           = Form("average"),
+    file: UploadFile = File(...),
+    media_type: str = Form("image"),
+    models: Optional[str] = Form(None),
+    strategy: str = Form("weighted"),
 ):
     if media_type not in MODEL_SERVICES:
-        raise HTTPException(400, f"media_type must be one of {list(MODEL_SERVICES)}")
+        raise HTTPException(400, "media_type must be one of %s" % list(MODEL_SERVICES))
 
     file_bytes = await file.read()
     if len(file_bytes) == 0:
         raise HTTPException(400, "Empty file")
 
-    # Images → cascaded logic
     if media_type == "image":
-        result = await detect_image_cascaded(file_bytes, file.filename or "upload")
+        all_services = MODEL_SERVICES[media_type]
+        if models:
+            requested = {m.strip() for m in models.split(",")}
+            services = [s for s in all_services if s["id"] in requested]
+            if not services:
+                raise HTTPException(400, "No matching models. Available: %s" % [s["id"] for s in all_services])
+        else:
+            services = all_services
+
+        async with httpx.AsyncClient() as client:
+            tasks = [call_model(client, svc, file_bytes, file.filename or "upload") for svc in services]
+            raw_results = await asyncio.gather(*tasks)
+
+        valid = [r for r in raw_results if r["verdict"] != "error"]
+        if not valid:
+            raise HTTPException(502, "All model services failed.")
+
+        tally = majority_vote(valid)
+        token = str(uuid.uuid4())
+        verification_id = _gen_verification_id()
+
+        enriched_breakdown = _enrich_breakdown(raw_results)
+
+        sha256 = hashlib.sha256(file_bytes).hexdigest()
+        file_type = _file_ext(file.filename or "upload.png")
+        timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+        dimensions = "unknown"
+        try:
+            img = Image.open(io.BytesIO(file_bytes))
+            dimensions = "%dx%d" % (img.width, img.height)
+        except Exception:
+            pass
+
+        verdict_display = "SYNTHETIC (AI)" if tally["verdict"] == "fake" else "AUTHENTIC (REAL)"
+        confidence_score = round(sum(r["fake_prob"] for r in valid) / len(valid), 4)
+
+        thumbnail_url = _save_thumbnail(file_bytes, verification_id)
+
+        audit_record = {
+            "verification_id": verification_id,
+            "feedback_token": token,
+            "filename": file.filename,
+            "file_type": file_type,
+            "dimensions": dimensions,
+            "sha256": sha256,
+            "timestamp_utc": timestamp,
+            "verdict": verdict_display,
+            "confidence": confidence_score,
+            "model_breakdown": enriched_breakdown,
+            "disputed": False,
+            "thumbnail_url": thumbnail_url,
+        }
+        _write_detection(audit_record)
+
+        _prune_detections()
+        _detections_cache[token] = {
+            "timestamp": time.time(),
+            "original_verdict": tally["verdict"],
+            "model_breakdown": tally["breakdown"],
+        }
+
+        errored = [r["model"] for r in raw_results if r["verdict"] == "error"]
+        full_breakdown = list(enriched_breakdown)
+        for name in errored:
+            display_key, label = MODEL_DISPLAY.get(name, (name, name))
+            full_breakdown.append({
+                "model": display_key,
+                "internal_name": name,
+                "label": label,
+                "score": None,
+                "vote": "error",
+                "display_type": "probability",
+            })
+        order = [s["name"] for s in all_services]
+        full_breakdown.sort(key=lambda e: order.index(e["internal_name"]) if e["internal_name"] in order else 99)
+
         return JSONResponse({
-            "filename":         file.filename,
-            "media_type":       media_type,
-            "strategy":         "cascaded_v4",
-            "detection_path":   result["detection_path"],
-            "verdict":          result["verdict"],
-            "fake_probability": result["fake_probability"],
-            "confidence":       result["confidence"],
-            "model_results":    result["raw_results"],
+            "verification_id": verification_id,
+            "feedback_token": token,
+            "receipt": {
+                "verdict": verdict_display,
+                "confidence_label": tally["confidence_label"],
+                "confidence": confidence_score,
+                "models_responded": tally["models_responded"],
+                "models_total": len(services),
+            },
+            "model_breakdown": full_breakdown,
+            "thumbnail_url": thumbnail_url,
         })
 
-    # Audio / Video → average across models
+    # Audio / Video
     all_services = MODEL_SERVICES[media_type]
     if models:
         requested = {m.strip() for m in models.split(",")}
-        services  = [s for s in all_services if s["id"] in requested]
+        services = [s for s in all_services if s["id"] in requested]
         if not services:
-            raise HTTPException(400, f"No matching models. Available: {[s['id'] for s in all_services]}")
+            raise HTTPException(400, "No matching models. Available: %s" % [s["id"] for s in all_services])
     else:
         services = all_services
 
     async with httpx.AsyncClient() as client:
-        tasks       = [call_model(client, svc, file_bytes, file.filename or "upload") for svc in services]
+        tasks = [call_model(client, svc, file_bytes, file.filename or "upload") for svc in services]
         raw_results = await asyncio.gather(*tasks)
 
     valid = [r for r in raw_results if r["verdict"] != "error"]
@@ -314,13 +405,13 @@ async def detect(
 
     meta = meta_learner(valid, strategy=strategy)
     return JSONResponse({
-        "filename":         file.filename,
-        "media_type":       media_type,
-        "strategy":         strategy,
-        "verdict":          meta["verdict"],
+        "filename": file.filename,
+        "media_type": media_type,
+        "strategy": strategy,
+        "verdict": meta["verdict"],
         "fake_probability": meta["fake_probability"],
-        "confidence":       meta["confidence"],
-        "model_results":    list(raw_results),
+        "confidence": meta["confidence"],
+        "model_results": list(raw_results),
     })
 
 
@@ -330,3 +421,114 @@ async def list_models():
         k: [{"id": s["id"], "name": s["name"], "url": s["url"]} for s in v]
         for k, v in MODEL_SERVICES.items()
     }
+
+
+@app.get("/api/history")
+async def history(
+    filter: str = Query("all"),
+    search: Optional[str] = Query(None),
+    limit: int = Query(50, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+):
+    if filter not in ("all", "synthetic", "authentic", "disputed"):
+        raise HTTPException(400, "filter must be one of: all, synthetic, authentic, disputed")
+
+    records = _load_all_detections()
+    total_all = len(records)
+
+    if filter == "synthetic":
+        records = [r for r in records if r.get("verdict") == "SYNTHETIC (AI)"]
+    elif filter == "authentic":
+        records = [r for r in records if r.get("verdict") == "AUTHENTIC (REAL)"]
+    elif filter == "disputed":
+        records = [r for r in records if r.get("disputed") is True]
+
+    if search:
+        q = search.lower()
+        records = [
+            r for r in records
+            if q in (r.get("filename") or "").lower()
+            or q in (r.get("sha256") or "").lower()
+            or q in (r.get("verification_id") or "").lower()
+        ]
+
+    total_filtered = len(records)
+    page = records[offset:offset + limit]
+
+    results = []
+    for r in page:
+        results.append({
+            "verification_id": r.get("verification_id"),
+            "filename": r.get("filename"),
+            "file_type": r.get("file_type"),
+            "dimensions": r.get("dimensions"),
+            "thumbnail_url": r.get("thumbnail_url"),
+            "timestamp_utc": r.get("timestamp_utc"),
+            "verdict": r.get("verdict"),
+            "confidence": r.get("confidence"),
+            "disputed": r.get("disputed", False),
+        })
+
+    return {
+        "total_attested": total_all,
+        "total_filtered": total_filtered,
+        "limit": limit,
+        "offset": offset,
+        "results": results,
+    }
+
+
+@app.get("/api/detect/{verification_id}")
+async def get_detection(verification_id: str):
+    rec = _load_detection_by_id(verification_id)
+    if rec is None:
+        raise HTTPException(404, "Detection not found: %s" % verification_id)
+    return rec
+
+
+@app.post("/api/feedback")
+async def submit_feedback(fb: FeedbackIn):
+    if fb.user_verdict not in ("correct", "incorrect"):
+        raise HTTPException(400, 'user_verdict must be "correct" or "incorrect"')
+
+    _prune_detections()
+    snap = _detections_cache.get(fb.feedback_token)
+
+    # Also try loading from JSONL if not in memory
+    if snap is None:
+        rec = None
+        if os.path.exists(DETECTIONS_LOG):
+            with open(DETECTIONS_LOG, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        r = json.loads(line)
+                        if r.get("feedback_token") == fb.feedback_token:
+                            rec = r
+                            break
+                    except json.JSONDecodeError:
+                        continue
+        if rec:
+            snap = {"original_verdict": "fake" if "SYNTHETIC" in (rec.get("verdict") or "") else "real", "model_breakdown": rec.get("model_breakdown", [])}
+
+    if snap is None:
+        raise HTTPException(404, "Unknown or expired feedback_token")
+
+    # Update disputed flag in audit log
+    if fb.user_verdict == "incorrect":
+        _update_detection_flag(fb.feedback_token, "disputed", True)
+
+    event = {
+        "feedback_token": fb.feedback_token,
+        "timestamp": time.time(),
+        "original_verdict": snap.get("original_verdict", "unknown"),
+        "model_breakdown": snap.get("model_breakdown", []),
+        "user_verdict": fb.user_verdict,
+    }
+    os.makedirs(os.path.dirname(FEEDBACK_LOG), exist_ok=True)
+    with open(FEEDBACK_LOG, "a", encoding="utf-8") as f:
+        f.write(json.dumps(event) + "\n")
+
+    return {"status": "logged", "feedback_token": fb.feedback_token}
