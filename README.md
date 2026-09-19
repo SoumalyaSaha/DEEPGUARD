@@ -4,6 +4,10 @@
 
 ![VERIFY.AI Landing Page](landing-page.png)
 
+### Neural Consensus Visualization
+
+![Neural Depiction](neural-depiction.png)
+
 > **Multi-modal deepfake detection system** that routes images to 7 specialist AI models via a FastAPI gateway and returns ensemble verdicts with full audit trails.
 
 ---
