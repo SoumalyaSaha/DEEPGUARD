@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-download_weights.py — Fetch genuine pretrained weights for all DeepGuard models.
+download_weights.py — Fetch genuine pretrained weights for all VERIFY.AI models.
 
-Run from the DeepGuard root directory:
+Run from the VERIFY.AI root directory:
     python download_weights.py
 
 What this downloads
@@ -305,7 +305,7 @@ def install_clip():
 
 def main():
     print("=" * 60)
-    print("  DeepGuard — Weight Downloader")
+    print("  VERIFY.AI — Weight Downloader")
     print("=" * 60)
 
     results = {}

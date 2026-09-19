@@ -1,4 +1,4 @@
-# DeepGuard — Deepfake Detection Gateway
+# VERIFY.AI — Deepfake Detection Gateway
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue) ![OAS](https://img.shields.io/badge/OAS-3.1-green) ![Status](https://img.shields.io/badge/status-active-brightgreen) ![Models](https://img.shields.io/badge/models-7%20active-orange)
 
@@ -6,9 +6,9 @@
 
 ---
 
-## What is DeepGuard?
+## What is VERIFY.AI?
 
-DeepGuard is a microservice-based deepfake detection platform that combines 7 state-of-the-art detection models into a single API gateway. Upload any image and DeepGuard runs it through all models in parallel, then aggregates results using configurable ensemble strategies.
+VERIFY.AI is a microservice-based deepfake detection platform that combines 7 state-of-the-art detection models into a single API gateway. Upload any image and VERIFY.AI runs it through all models in parallel, then aggregates results using configurable ensemble strategies.
 
 Built because no single model catches all deepfakes. Ensemble inference does.
 
@@ -40,7 +40,7 @@ Image File
 ## Project Structure
 
 ```
-D:\DeepGuard\
+D:\VERIFY.AI\
 ├── gateway/
 │   └── main.py                  ← FastAPI gateway (port 8000) — orchestrates all 7 voters
 │
@@ -139,8 +139,8 @@ D:\DeepGuard\
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/SoumalyaSaha/DeepGuard.git
-cd DeepGuard
+git clone https://github.com/SoumalyaSaha/VERIFY.AI.git
+cd VERIFY.AI
 ```
 
 ### 2. Create a virtual environment
@@ -167,7 +167,7 @@ pip install -r requirements.txt
 venv\Scripts\python download_weights.py
 ```
 
-This downloads all weights to `D:\DeepGuard\weights` and HuggingFace cache to `D:\DeepGuard\hf_cache`. Takes ~10 min on first run, instant on subsequent runs.
+This downloads all weights to `D:\VERIFY.AI\weights` and HuggingFace cache to `D:\VERIFY.AI\hf_cache`. Takes ~10 min on first run, instant on subsequent runs.
 
 ### 5. Start all services
 
@@ -285,7 +285,7 @@ Built from Stitch design export (project `18196254217642893748`).
 
 ## Offline Operation
 
-After the first boot, DeepGuard runs **fully offline** with no internet required:
+After the first boot, VERIFY.AI runs **fully offline** with no internet required:
 
 ```bat
 :: Add to start_all.bat (already configured)
@@ -295,8 +295,8 @@ start_all.bat
 ```
 
 Cached on disk:
-- `D:\DeepGuard\weights\` — model weight files
-- `D:\DeepGuard\hf_cache\` — HuggingFace model cache
+- `D:\VERIFY.AI\weights\` — model weight files
+- `D:\VERIFY.AI\hf_cache\` — HuggingFace model cache
 - `D:\temp\clip_cache\` — CLIP ViT-L/14
 - `D:\temp\torch_cache\` — PyTorch hub cache
 - `frontend/public/` — vendored Tailwind, Three.js, fonts

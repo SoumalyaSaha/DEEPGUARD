@@ -1,5 +1,5 @@
 @echo off
-title Deepfake Detector Setup
+title VERIFY.AI Setup
 color 0A
 :: Hugging Face model cache lives in-repo on D: (C: is nearly full).
 :: MUST be set before any Python process starts, or downloads land on C:.
@@ -9,7 +9,7 @@ set HUGGINGFACE_HUB_CACHE=D:\DeepGuard\hf_cache\hub
 set TORCH_HOME=D:\temp\torch_cache
 echo.
 echo  ====================================
-echo   Deepfake Detector - Setup ^& Launch
+echo   VERIFY.AI - Setup ^& Launch
 echo  ====================================
 echo.
 

@@ -5,7 +5,7 @@ set HF_HOME=D:\DeepGuard\hf_cache
 set HF_HUB_CACHE=D:\DeepGuard\hf_cache\hub
 set HUGGINGFACE_HUB_CACHE=D:\DeepGuard\hf_cache\hub
 set TORCH_HOME=D:\temp\torch_cache
-echo Starting DeepGuard (7 voters + gateway)...
+echo Starting VERIFY.AI (7 voters + gateway)...
 start "NPR Model" cmd /k "cd /d D:\DeepGuard && venv\Scripts\activate && cd models\npr && uvicorn main:app --port 5001"
 start "UFD Model" cmd /k "cd /d D:\DeepGuard && venv\Scripts\activate && cd models\ufd && uvicorn main:app --port 5004"
 start "IAPL Model" cmd /k "cd /d D:\DeepGuard && venv\Scripts\activate && cd models\iapl && uvicorn main:app --port 5005"

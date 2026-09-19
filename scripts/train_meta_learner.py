@@ -1,5 +1,5 @@
 """
-Offline logistic-regression meta-learner for DeepGuard image path.
+Offline logistic-regression meta-learner for VERIFY.AI image path.
 
 Merges per-model solo-eval CSVs (NPR+UFD combined, IAPL plain-forward),
 trains sklearn LogisticRegression on [npr, ufd, iapl] fake_probs with a
